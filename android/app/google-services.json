@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "690521006433",
+    "project_id": "memberdemo-85ebc",
+    "storage_bucket": "memberdemo-85ebc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690521006433:android:5a36e06b961ebdd505e520",
+        "android_client_info": {
+          "package_name": "com.example.sceptixapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "690521006433-hu2o8ho2l14ol2g2ujnh28qhlj9fa605.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuRXi3vIH-towf4h96Im3Hx3xc9rbxLQ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "690521006433-hu2o8ho2l14ol2g2ujnh28qhlj9fa605.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
