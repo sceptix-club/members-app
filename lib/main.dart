@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           return const MaterialApp(
             home: Scaffold(
               body: Center(
-                child: Text('child should be inside children',
+                child: Text('pride is ending',
                 style: TextStyle(
                   color: Colors.blue,
                   fontSize: 40,
@@ -56,7 +56,15 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
           ),
           home: const Scaffold(
-
+            body: Center(
+              child: Text('working ig',
+                style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
           ),
         );
       }
