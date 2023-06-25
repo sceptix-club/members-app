@@ -28,7 +28,7 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('members').snapshots(),
+        stream: FirebaseFirestore.instance.collection('members').orderBy('Score', descending: true).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
@@ -110,7 +110,13 @@ class GetStudentName extends StatelessWidget {
                     const Text('Grade'),
                   ],
                 ),
-              ),
+                /*3*/
+                Icon(
+                  Icons.star,
+                  color: Colors.red[500],
+                ),
+                Text(data['Score'].toString()),
+              ],
             ),
           );
 
