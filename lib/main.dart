@@ -81,34 +81,39 @@ class GetStudentName extends StatelessWidget {
           dynamic dobValue = data['DOB'];
           String sDOB = dobValue.toString();
 
-          return  Container(
-            padding: const EdgeInsets.all(32),
-            child: Row(
-              children: [
-                Expanded(
-                  /*1*/
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      /*2*/
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(data['Name']),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 20.0), // Adjust the value as needed
+            child: SingleChildScrollView(
+              child: Container(
+                color: Colors.grey,
+                padding: const EdgeInsets.all(50),
+                child: Row(
+                  children: [
+                    Expanded(
+                      /*1*/
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /*2*/
+                          Container(
+                            child: Text(data['Name']),
+                          ),
+                          Text(data['Number'].toString()),
+                        ],
                       ),
-                      Text(data['Number'].toString()),
-
-                    ],
-                  ),
+                    ),
+                    /*3*/
+                    Icon(
+                      Icons.star,
+                      color: Colors.red[500],
+                    ),
+                    const Text('Grade'),
+                  ],
                 ),
-                /*3*/
-                Icon(
-                  Icons.star,
-                  color: Colors.red[500],
-                ),
-                const Text('Grade'),
-              ],
+              ),
             ),
           );
+
 
         }
 
