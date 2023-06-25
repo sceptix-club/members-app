@@ -105,7 +105,7 @@ class GetStudentName extends StatelessWidget {
                   Icons.star,
                   color: Colors.red[500],
                 ),
-                const Text('Grade'),
+                Text(data['Score'].toString()),
               ],
             ),
           );
