@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-class MyHomeApp extends StatelessWidget {
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,13 +80,15 @@ class GetStudentName extends StatelessWidget {
         //Data is output to the user
         if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+          dynamic dobValue = data['DOB'];
+          String sDOB = dobValue.toString();
+
           return ListTile(
             title: Text(data['Name']),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(data['Number']),
-                Text(data['DOB']),
+                Text(data['Number'].toString()),
               ],
             ),
           );
