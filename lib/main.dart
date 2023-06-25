@@ -3,9 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +37,7 @@ class MyHomePage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Text('Loading...');
           }
+
 
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
@@ -83,15 +81,35 @@ class GetStudentName extends StatelessWidget {
           dynamic dobValue = data['DOB'];
           String sDOB = dobValue.toString();
 
-          return ListTile(
-            title: Text(data['Name']),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          return  Container(
+            padding: const EdgeInsets.all(32),
+            child: Row(
               children: [
-                Text(data['Number'].toString()),
+                Expanded(
+                  /*1*/
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /*2*/
+                      Container(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(data['Name']),
+                      ),
+                      Text(data['Number'].toString()),
+
+                    ],
+                  ),
+                ),
+                /*3*/
+                Icon(
+                  Icons.star,
+                  color: Colors.red[500],
+                ),
+                const Text('Grade'),
               ],
             ),
           );
+
         }
 
         return const Text("Loading...");
