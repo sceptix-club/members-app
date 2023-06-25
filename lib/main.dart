@@ -17,7 +17,40 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: GetStudentName(),
+      home: MyHomePage(),
+    );
+  }
+}
+class MyHomeApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'My Home Page'
+        ),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('members').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text('Loading...');
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (BuildContext context, int index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
+              String documentId = document.id;
+              return GetStudentName(documentId);
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -56,7 +89,7 @@ class GetStudentName extends StatelessWidget {
                 Text(data['DOB']),
               ],
             ),
-          )
+          );
         }
 
         return const Text("Loading...");
