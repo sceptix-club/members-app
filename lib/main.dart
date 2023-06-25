@@ -28,7 +28,7 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('members').orderBy('RolePriority', descending: false).orderBy('Score', descending: true).snapshots(),
+        stream: FirebaseFirestore.instance.collection('members').orderBy('Score', descending: true).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
