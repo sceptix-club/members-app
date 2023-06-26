@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   return ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (BuildContext context, int index) {
                       DocumentSnapshot document = snapshot.data!.docs[index];
@@ -93,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Color(0xFF222222), // Set the overall background color
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -103,6 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
               label: 'Members',
             ),
           ],
+          selectedItemColor: Color(0xFFFFFFFF), // Set the background color for the selected item
+          unselectedItemColor: Colors.grey, // Set the background color for the unselected items
         ),
       ),
     );
@@ -146,30 +149,53 @@ class GetStudentName extends StatelessWidget {
               );
             },
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Container(
-                color: Colors.grey,
-                padding: const EdgeInsets.all(50),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Card(
+                color: Colors.grey[200],
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data['Name'],
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              data['Number'].toString(),
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              data['Role'],
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Container(
-                            child: Text(data['Name']),
+                          Icon(
+                            Icons.star,
+                            color: Colors.red[500],
                           ),
-                          Text(data['Number'].toString()),
-                          Text(data['Role']),
+                          const SizedBox(height: 8),
+                          Text(
+                            data['Score'].toString(),
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ],
                       ),
-                    ),
-                    Icon(
-                      Icons.star,
-                      color: Colors.red[500],
-                    ),
-                    Text(data['Score'].toString()),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -196,7 +222,7 @@ class ProfilePhotoWidget extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
 
         final data = snapshot.data!.data() as Map<String, dynamic>?;
@@ -205,7 +231,7 @@ class ProfilePhotoWidget extends StatelessWidget {
         if (photoUrl != null) {
           return Image.network(photoUrl);
         } else {
-          return Text('No profile photo available');
+          return const Text('No profile photo available');
         }
       },
     );
