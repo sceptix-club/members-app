@@ -179,3 +179,34 @@ class GetStudentName extends StatelessWidget {
     );
   }
 }
+
+
+class ProfilePhotoWidget extends StatelessWidget {
+  final String documentId;
+
+  ProfilePhotoWidget({required this.documentId});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('members')
+          .doc(documentId) // Use documentId instead of githubUsername
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+
+        final data = snapshot.data!.data() as Map<String, dynamic>?;
+        final photoUrl = data?['GithubURL'];
+
+        if (photoUrl != null) {
+          return Image.network(photoUrl);
+        } else {
+          return Text('No profile photo available');
+        }
+      },
+    );
+  }
+}
