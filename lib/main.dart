@@ -104,8 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
               label: 'Members',
             ),
           ],
-          selectedItemColor: Color(0xFFFFFFFF), // Set the background color for the selected item
-          unselectedItemColor: Colors.grey, // Set the background color for the unselected items
+          selectedItemColor: Colors.grey,
+          unselectedItemColor: Color(0xFFFFFFFF),
         ),
       ),
     );
@@ -144,7 +144,7 @@ class GetStudentName extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => memdetails(data), // Pass the data to the member details page
+                  builder: (context) => memberDetails(data), // Pass the data to the member details page
                 ),
               );
             },
