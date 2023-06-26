@@ -35,71 +35,75 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          DropdownButtonFormField<String>(
-            value: sortingField,
-            items: const [
-              DropdownMenuItem<String>(
-                value: 'RolePriority',
-                child: Text('Sort by Role'),
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              DropdownButtonFormField<String>(
+                value: sortingField,
+                items: const [
+                  DropdownMenuItem<String>(
+                    value: 'RolePriority',
+                    child: Text('Sort by Role'),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'Score',
+                    child: Text('Sort by Score'),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    // Update the sorting field
+                    setState(() {
+                      sortingField = value;
+                      // Update the sorting order
+                      sortAscending = value == 'RolePriority'; // Set sortAscending to true for 'Role' field, false otherwise
+                    });
+                  }
+                },
               ),
-              DropdownMenuItem<String>(
-                value: 'Score',
-                child: Text('Sort by Score'),
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('members')
+                    .orderBy(sortingField, descending: !sortAscending)
+                    .snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Text('Loading...');
+                  }
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      DocumentSnapshot document = snapshot.data!.docs[index];
+                      String documentId = document.id;
+                      return GetStudentName(documentId);
+                    },
+                  );
+                },
               ),
             ],
-            onChanged: (value) {
-              if (value != null) {
-                // Update the sorting field
-                setState(() {
-                  sortingField = value;
-                  // Update the sorting order
-                  sortAscending = value == 'RolePriority'; // Set sortAscending to true for 'Role' field, false otherwise
-                });
-              }
-            },
           ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('members')
-                  .orderBy(sortingField, descending: !sortAscending)
-                  .snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text('Loading...');
-                }
-
-                return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    DocumentSnapshot document = snapshot.data!.docs[index];
-                    String documentId = document.id;
-                    return GetStudentName(documentId);
-                  },
-                );
-              },
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Members',
-          ),
-        ],
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Members',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -143,31 +147,29 @@ class GetStudentName extends StatelessWidget {
             },
             child: Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
-              child: SingleChildScrollView(
-                child: Container(
-                  color: Colors.grey,
-                  padding: const EdgeInsets.all(50),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              child: Text(data['Name']),
-                            ),
-                            Text(data['Number'].toString()),
-                            Text(data['Role']),
-                          ],
-                        ),
+              child: Container(
+                color: Colors.grey,
+                padding: const EdgeInsets.all(50),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Text(data['Name']),
+                          ),
+                          Text(data['Number'].toString()),
+                          Text(data['Role']),
+                        ],
                       ),
-                      Icon(
-                        Icons.star,
-                        color: Colors.red[500],
-                      ),
-                      Text(data['Score'].toString()),
-                    ],
-                  ),
+                    ),
+                    Icon(
+                      Icons.star,
+                      color: Colors.red[500],
+                    ),
+                    Text(data['Score'].toString()),
+                  ],
                 ),
               ),
             ),
@@ -179,7 +181,6 @@ class GetStudentName extends StatelessWidget {
     );
   }
 }
-
 
 class ProfilePhotoWidget extends StatelessWidget {
   final String documentId;
