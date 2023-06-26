@@ -1,12 +1,17 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:sceptixapp/memdetails.dart';
+import 'memdetails.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
@@ -18,17 +23,19 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'My Home Page'
-        ),
+        title: const Text('My Home Page'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('members').orderBy('Score', descending: true).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('members')
+            .orderBy('Score', descending: true)
+            .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
@@ -37,7 +44,6 @@ class MyHomePage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Text('Loading...');
           }
-
 
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
@@ -63,10 +69,10 @@ class GetStudentName extends StatelessWidget {
     CollectionReference members = FirebaseFirestore.instance.collection('members');
 
     return FutureBuilder<DocumentSnapshot>(
-      //Fetching data from the documentId specified of the student
+      // Fetching data from the documentId specified for the student
       future: members.doc(documentId).get(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        //Error Handling conditions
+        // Error Handling conditions
         if (snapshot.hasError) {
           return const Text("Something went wrong");
         }
@@ -75,47 +81,50 @@ class GetStudentName extends StatelessWidget {
           return const Text("Document does not exist");
         }
 
-        //Data is output to the user
+        // Data is output to the user
         if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-          dynamic dobValue = data['DOB'];
-          String sDOB = dobValue.toString();
 
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 20.0), // Adjust the value as needed
-            child: SingleChildScrollView(
-              child: Container(
-                color: Colors.grey,
-                padding: const EdgeInsets.all(50),
-                child: Row(
-                  children: [
-                    Expanded(
-                      /*1*/
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /*2*/
-                          Container(
-                            child: Text(data['Name']),
-                          ),
-                          Text(data['Number'].toString()),
-                        ],
-                      ),
-                    ),
-                    /*3*/
-                /*3*/
-                Icon(
-                  Icons.star,
-                  color: Colors.red[500],
+          return GestureDetector(
+            onTap: () {
+              // Navigate to the desired page when the box is clicked
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => memdetails(data), // Pass the data to the member details page
                 ),
-                Text(data['Score'].toString()),
-              ],
-            ),
-          ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: SingleChildScrollView(
+                child: Container(
+                  color: Colors.grey,
+                  padding: const EdgeInsets.all(50),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text(data['Name']),
+                            ),
+                            Text(data['Number'].toString()),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.star,
+                        color: Colors.red[500],
+                      ),
+                      Text(data['Score'].toString()),
+                    ],
+                  ),
+                ),
+              ),
             ),
           );
-
-
         }
 
         return const Text("Loading...");
