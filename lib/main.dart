@@ -34,7 +34,7 @@ class MyHomePage extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('members')
-            .orderBy('Score', descending: true)
+            .orderBy('RolePriority', descending: false)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -124,6 +124,7 @@ class GetStudentName extends StatelessWidget {
                               child: Text(data['Name']),
                             ),
                             Text(data['Number'].toString()),
+                            Text(data['Role']),
                           ],
                         ),
                       ),
