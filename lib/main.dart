@@ -24,36 +24,70 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  String sortingField = 'RolePriority'; // Default sorting field
+  bool sortAscending = true; // Default sorting order
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Home Page'),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('members')
-            .orderBy('Score', descending: true)
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text('Loading...');
-          }
-
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (BuildContext context, int index) {
-              DocumentSnapshot document = snapshot.data!.docs[index];
-              String documentId = document.id;
-              return GetStudentName(documentId);
+      body: Column(
+        children: [
+          DropdownButtonFormField<String>(
+            value: sortingField,
+            items: const [
+              DropdownMenuItem<String>(
+                value: 'RolePriority',
+                child: Text('Sort by Role'),
+              ),
+              DropdownMenuItem<String>(
+                value: 'Score',
+                child: Text('Sort by Score'),
+              ),
+            ],
+            onChanged: (value) {
+              if (value != null) {
+                // Update the sorting field
+                setState(() {
+                  sortingField = value;
+                  // Update the sorting order
+                  sortAscending = value == 'RolePriority'; // Set sortAscending to true for 'Role' field, false otherwise
+                });
+              }
             },
-          );
-        },
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('members')
+                  .orderBy(sortingField, descending: !sortAscending)
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text('Loading...');
+                }
+
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    DocumentSnapshot document = snapshot.data!.docs[index];
+                    String documentId = document.id;
+                    return GetStudentName(documentId);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -63,11 +97,10 @@ class MyHomePage extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Memberss',
+            label: 'Members',
           ),
         ],
       ),
-
     );
   }
 }
