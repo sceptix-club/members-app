@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
           selectedItemColor: Colors.grey,
-          unselectedItemColor: Color(0xFFFFFFFF),
+          unselectedItemColor: const Color(0xFFFFFFFF),
         ),
       ),
     );
