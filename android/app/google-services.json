@@ -29,6 +29,13 @@
             {
               "client_id": "690521006433-hu2o8ho2l14ol2g2ujnh28qhlj9fa605.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "690521006433-ojorbrk0cq899m3cul5358556kagg365.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sceptixapp"
+              }
             }
           ]
         }

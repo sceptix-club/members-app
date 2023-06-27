@@ -17,7 +17,7 @@ class memberDetails extends StatelessWidget {
             children: [
               Text('Name: ${memberData['Name']}'),
               SizedBox(height: 10),
-              Text('Number: ${memberData['Number']}'),
+              Text('Role: ${memberData['Role']}'),
               SizedBox(height: 10),
               Text('Score: ${memberData['Score']}'),
             ],
