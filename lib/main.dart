@@ -62,7 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     setState(() {
                       sortingField = value;
                       // Update the sorting order
-                      sortAscending = value == 'RolePriority'; // Set sortAscending to true for 'Role' field, false otherwise
+                      sortAscending = value ==
+                          'RolePriority'; // Set sortAscending to true for 'Role' field, false otherwise
                     });
                   }
                 },
@@ -72,7 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     .collection('members')
                     .orderBy(sortingField, descending: !sortAscending)
                     .snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   }
@@ -97,7 +99,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color(0xFF222222), // Set the overall background color
+          backgroundColor:
+              Color(0xFF222222), // Set the overall background color
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -123,12 +126,14 @@ class GetStudentName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference members = FirebaseFirestore.instance.collection('members');
+    CollectionReference members =
+        FirebaseFirestore.instance.collection('members');
 
     return FutureBuilder<DocumentSnapshot>(
       // Fetching data from the documentId specified for the student
       future: members.doc(documentId).get(),
-      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         // Error Handling conditions
         if (snapshot.hasError) {
           return const Text("Something went wrong");
@@ -140,7 +145,8 @@ class GetStudentName extends StatelessWidget {
 
         // Data is output to the user
         if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
 
           return GestureDetector(
             onTap: () {
@@ -148,7 +154,8 @@ class GetStudentName extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => memberDetails(data), // Pass the data to the member details page
+                  builder: (context) => memberDetails(
+                      data), // Pass the data to the member details page
                 ),
               );
             },
@@ -185,7 +192,10 @@ class GetStudentName extends StatelessWidget {
                           const SizedBox(height: 8),
                           Text(
                             data['Score'].toString(),
-                            style: const TextStyle(fontSize: 20),
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.deepOrange,
+                                fontWeight: FontWeight.w900),
                           ),
                         ],
                       ),
@@ -198,36 +208,6 @@ class GetStudentName extends StatelessWidget {
         }
 
         return const Text("Loading...");
-      },
-    );
-  }
-}
-
-class ProfilePhotoWidget extends StatelessWidget {
-  final String documentId;
-
-  ProfilePhotoWidget({required this.documentId});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('members')
-          .doc(documentId) // Use documentId instead of githubUsername
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const CircularProgressIndicator();
-        }
-
-        final data = snapshot.data!.data() as Map<String, dynamic>?;
-        final photoUrl = data?['GithubURL'];
-
-        if (photoUrl != null) {
-          return Image.network(photoUrl);
-        } else {
-          return const Text('No profile photo available');
-        }
       },
     );
   }
