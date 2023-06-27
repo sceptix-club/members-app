@@ -173,11 +173,6 @@ class GetStudentName extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              data['Number'].toString(),
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
                               data['Role'],
                               style: const TextStyle(fontSize: 14),
                             ),
@@ -187,14 +182,10 @@ class GetStudentName extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.red[500],
-                          ),
                           const SizedBox(height: 8),
                           Text(
                             data['Score'].toString(),
-                            style: const TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 20),
                           ),
                         ],
                       ),
