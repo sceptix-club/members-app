@@ -54,6 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   DropdownButtonFormField<String>(
                     value: sortingField,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors
+                          .white, // You can further customize the appearance using other InputDecoration properties
+                    ),
                     items: const [
                       DropdownMenuItem<String>(
                         value: 'RolePriority',
@@ -70,8 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         setState(() {
                           sortingField = value;
                           // Update the sorting order
-                          sortAscending = value ==
-                              'RolePriority'; // Set sortAscending to true for 'Role' field, false otherwise
+                          sortAscending = value == 'RolePriority';
                         });
                       }
                     },
