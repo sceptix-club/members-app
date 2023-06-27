@@ -41,63 +41,72 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              DropdownButtonFormField<String>(
-                value: sortingField,
-                items: const [
-                  DropdownMenuItem<String>(
-                    value: 'RolePriority',
-                    child: Text('Sort by Role'),
+        body: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/background(temp).png'),
+                fit: BoxFit
+                    .cover, // Ensure the image covers the entire container
+              ),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  DropdownButtonFormField<String>(
+                    value: sortingField,
+                    items: const [
+                      DropdownMenuItem<String>(
+                        value: 'RolePriority',
+                        child: Text('Sort by Role'),
+                      ),
+                      DropdownMenuItem<String>(
+                        value: 'Score',
+                        child: Text('Sort by Score'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        // Update the sorting field
+                        setState(() {
+                          sortingField = value;
+                          // Update the sorting order
+                          sortAscending = value ==
+                              'RolePriority'; // Set sortAscending to true for 'Role' field, false otherwise
+                        });
+                      }
+                    },
                   ),
-                  DropdownMenuItem<String>(
-                    value: 'Score',
-                    child: Text('Sort by Score'),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('members')
+                        .orderBy(sortingField, descending: !sortAscending)
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Text('Loading...');
+                      }
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          DocumentSnapshot document =
+                              snapshot.data!.docs[index];
+                          String documentId = document.id;
+                          return GetStudentName(documentId);
+                        },
+                      );
+                    },
                   ),
                 ],
-                onChanged: (value) {
-                  if (value != null) {
-                    // Update the sorting field
-                    setState(() {
-                      sortingField = value;
-                      // Update the sorting order
-                      sortAscending = value ==
-                          'RolePriority'; // Set sortAscending to true for 'Role' field, false otherwise
-                    });
-                  }
-                },
               ),
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('members')
-                    .orderBy(sortingField, descending: !sortAscending)
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Text('Loading...');
-                  }
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      DocumentSnapshot document = snapshot.data!.docs[index];
-                      String documentId = document.id;
-                      return GetStudentName(documentId);
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
+            )),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor:
               Color(0xFF222222), // Set the overall background color
