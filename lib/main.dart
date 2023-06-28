@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         // Update the sorting field
                         setState(() {
                           sortingField = value;
-                          // Update the sorting order
+                          // Update the sorting order by magnitudes!
                           sortAscending = value == 'RolePriority';
                         });
                       }
