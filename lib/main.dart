@@ -65,7 +65,27 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text('Sort by Role'),
                       ),
                       DropdownMenuItem<String>(
-
+                        value: 'Score',
+                        child: Text('Sort by Score'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        // Update the sorting field
+                        setState(() {
+                          sortingField = value;
+                          // Update the sorting order
+                          sortAscending = value == 'RolePriority';
+                        });
+                      }
+                    },
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('members')
+                        .orderBy(sortingField, descending: !sortAscending)
+                        .snapshots(),
+                    builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
