@@ -1,41 +1,42 @@
 {
   "project_info": {
-    "project_number": "690521006433",
-    "project_id": "memberdemo-85ebc",
-    "storage_bucket": "memberdemo-85ebc.appspot.com"
+    "project_number": "347368882446",
+    "project_id": "sceptix-members-api",
+    "storage_bucket": "sceptix-members-api.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:690521006433:android:5a36e06b961ebdd505e520",
+        "mobilesdk_app_id": "1:347368882446:android:3f5ae5a171951a6fed175f",
         "android_client_info": {
-          "package_name": "com.example.sceptixapp"
+          "package_name": "com.sceptix.members"
         }
       },
       "oauth_client": [
         {
-          "client_id": "690521006433-hu2o8ho2l14ol2g2ujnh28qhlj9fa605.apps.googleusercontent.com",
+          "client_id": "347368882446-1pdks8sn658mriptmrtne75e3cr8fkv7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sceptix.members",
+            "certificate_hash": "7b79210bb65aeb3c80040778410e5bb95fa418bc"
+          }
+        },
+        {
+          "client_id": "347368882446-30910bgbik50hna6obt3nre80f0ep7og.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCuRXi3vIH-towf4h96Im3Hx3xc9rbxLQ8"
+          "current_key": "AIzaSyBTz-Q999xcgFvJcuBWGMuWROphodhceWs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "690521006433-hu2o8ho2l14ol2g2ujnh28qhlj9fa605.apps.googleusercontent.com",
+              "client_id": "347368882446-30910bgbik50hna6obt3nre80f0ep7og.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "690521006433-ojorbrk0cq899m3cul5358556kagg365.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.sceptixapp"
-              }
             }
           ]
         }
