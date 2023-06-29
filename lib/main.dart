@@ -45,8 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/background(temp).png'),
-                fit: BoxFit
-                    .cover, // Ensure the image covers the entire container
+                fit: BoxFit.cover,// Ensure the image covers the entire container
               ),
             ),
             child: SingleChildScrollView(
@@ -71,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                     onChanged: (value) {
                       if (value != null) {
-                        // Update the sorting field
+                        // Update the sorting fie ld
                         setState(() {
                           sortingField = value;
                           // Update the sorting order
