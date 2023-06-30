@@ -1,42 +1,78 @@
 {
   "project_info": {
-    "project_number": "347368882446",
-    "project_id": "sceptix-members-api",
-    "storage_bucket": "sceptix-members-api.appspot.com"
+    "project_number": "60644087584",
+    "firebase_url": "https://members-app-5cd66-default-rtdb.firebaseio.com",
+    "project_id": "members-app-5cd66",
+    "storage_bucket": "members-app-5cd66.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:347368882446:android:3f5ae5a171951a6fed175f",
+        "mobilesdk_app_id": "1:60644087584:android:546ff9b480955cc18b6945",
         "android_client_info": {
-          "package_name": "com.sceptix.members"
+          "package_name": "com.example.sceptixapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "347368882446-1pdks8sn658mriptmrtne75e3cr8fkv7.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.sceptix.members",
-            "certificate_hash": "7b79210bb65aeb3c80040778410e5bb95fa418bc"
-          }
-        },
-        {
-          "client_id": "347368882446-30910bgbik50hna6obt3nre80f0ep7og.apps.googleusercontent.com",
+          "client_id": "60644087584-iq2ajd96vafm20at7efp81f99gf466e8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBTz-Q999xcgFvJcuBWGMuWROphodhceWs"
+          "current_key": "AIzaSyBcjSGsuC2vgYkJRbtMUOW8XHO09ABJodU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "347368882446-30910bgbik50hna6obt3nre80f0ep7og.apps.googleusercontent.com",
+              "client_id": "60644087584-iq2ajd96vafm20at7efp81f99gf466e8.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "60644087584-nfogb61cdvu2fo88ldrdp1q06ehdgugc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sceptixapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60644087584:android:84fb3f93dc9232a88b6945",
+        "android_client_info": {
+          "package_name": "com.sceptix.members"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60644087584-iq2ajd96vafm20at7efp81f99gf466e8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcjSGsuC2vgYkJRbtMUOW8XHO09ABJodU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60644087584-iq2ajd96vafm20at7efp81f99gf466e8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "60644087584-nfogb61cdvu2fo88ldrdp1q06ehdgugc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sceptixapp"
+              }
             }
           ]
         }
