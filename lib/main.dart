@@ -7,8 +7,6 @@ import 'firebase_options.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sceptixapp/memdetails.dart';
-import 'memdetails.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -34,8 +32,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String sortingField = 'RolePriority'; // Default sorting field
-  bool sortAscending = true; // Default sorting order
+  String sortingField = 'rolePriority'; // Default sorting field
+  bool sortDescending = true; // Default sorting order
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     items: const [
                       DropdownMenuItem<String>(
-                        value: 'RolePriority',
+                        value: 'rolePriority',
                         child: Text('Sort by Role'),
                       ),
                       DropdownMenuItem<String>(
@@ -74,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         setState(() {
                           sortingField = value;
                           // Update the sorting order
-                          sortAscending = value == 'RolePriority';
+                          sortDescending = value == 'rolePriority';
                         });
                       }
                     },
@@ -82,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('members')
-                        .orderBy(sortingField, descending: !sortAscending)
+                        .orderBy(sortingField, descending: sortDescending)
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -112,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
             )),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor:
-              Color(0xFF222222), // Set the overall background color
+              const Color(0xFF222222), // Set the overall background color
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -166,7 +164,7 @@ class GetStudentName extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => memberDetails(
+                  builder: (context) => MemberDetails(
                       data), // Pass the data to the member details page
                 ),
               );
@@ -184,7 +182,7 @@ class GetStudentName extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              data['Name'],
+                              data['fullName'],
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -192,7 +190,7 @@ class GetStudentName extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              data['Role'],
+                              data['designation'],
                               style: const TextStyle(fontSize: 14),
                             ),
                           ],
@@ -203,7 +201,7 @@ class GetStudentName extends StatelessWidget {
                         children: [
                           const SizedBox(height: 8),
                           Text(
-                            data['Score'].toString(),
+                            data['phone'].toString(),
                             style: const TextStyle(
                                 fontSize: 20,
                                 color: Colors.deepOrange,
