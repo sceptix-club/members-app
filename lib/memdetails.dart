@@ -46,6 +46,11 @@ class MemberDetails extends StatelessWidget {
                       'Desgination: ${memberData['designation']}',
                       style: const TextStyle(color: Colors.white),
                     ),
+                    SizedBox(
+                      width: 200,
+                      height: 200,
+                      child: Image.network(memberData['image']),
+                    )
                   ],
                 ),
               ),
