@@ -7,7 +7,8 @@ import 'package:sceptixapp/widgets/auth_widget.dart';
 import 'firebase_options.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:sceptixapp/memdetails.dart';
+import 'memdetails.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -35,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String sortingField = 'rolePriority'; // Default sorting field
   bool sortDescending = true; // Default sorting order
+  var db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text('Sort by Role'),
                       ),
                       DropdownMenuItem<String>(
-                        value: 'Score',
+                        value: 'score',
                         child: Text('Sort by Score'),
                       ),
                     ],
@@ -83,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         .collection('members')
                         .orderBy(sortingField, descending: sortDescending)
                         .snapshots(),
+
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasError) {
@@ -108,7 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-            )),
+            )
+          ),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor:
               const Color(0xFF222222), // Set the overall background color
@@ -138,7 +142,7 @@ class GetStudentName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CollectionReference members =
-        FirebaseFirestore.instance.collection('members');
+    FirebaseFirestore.instance.collection('members');
 
     return FutureBuilder<DocumentSnapshot>(
       // Fetching data from the documentId specified for the student
@@ -157,7 +161,7 @@ class GetStudentName extends StatelessWidget {
         // Data is output to the user
         if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
+          snapshot.data!.data() as Map<String, dynamic>;
 
           return GestureDetector(
             onTap: () {
@@ -178,6 +182,11 @@ class GetStudentName extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(data['image']),
+                      ),
+                      SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,7 +211,7 @@ class GetStudentName extends StatelessWidget {
                         children: [
                           const SizedBox(height: 8),
                           Text(
-                            data['phone'].toString(),
+                            data['score'].toString(),
                             style: const TextStyle(
                                 fontSize: 20,
                                 color: Colors.deepOrange,
