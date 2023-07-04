@@ -7,7 +7,7 @@ import 'package:sceptixapp/widgets/auth_widget.dart';
 import 'firebase_options.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'memdetails.dart';
+import 'MemberDetails.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -118,8 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
               const Color(0xFF222222), // Set the overall background color
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+              icon: Icon(Icons.account_tree_outlined),
+              label: 'Events',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
