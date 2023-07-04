@@ -7,7 +7,7 @@ import 'package:sceptixapp/widgets/auth_widget.dart';
 import 'firebase_options.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'memdetails.dart';
+import 'MemberDetails.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
