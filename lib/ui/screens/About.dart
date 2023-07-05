@@ -1,8 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'package:sceptixapp/ui/screens/login.dart';
 import '../Components/animated_btn.dart';
-import '../main.dart';
+import 'package:sceptixapp/main.dart';
 //import 'login.dart';
 
 class OnbodingScreen extends StatefulWidget {
@@ -154,7 +155,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (cxt) => MyHomePage()),
+                                    builder: (cxt) => Login()),
                               );
                             });
                           },
