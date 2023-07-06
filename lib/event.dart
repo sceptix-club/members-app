@@ -7,6 +7,7 @@ import 'firebase_options.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 class EventsPage extends StatefulWidget {
   @override
   _EventsPageState createState() => _EventsPageState();
@@ -16,27 +17,6 @@ class _EventsPageState extends State<EventsPage> {
   final TextEditingController eventNameController = TextEditingController();
   final TextEditingController eventDescriptionController = TextEditingController();
   final TextEditingController eventLeaderController = TextEditingController();
-
-  Future<void> _addEvent() async {
-    final String eventName = eventNameController.text;
-    final String eventDescription = eventDescriptionController.text;
-    final String eventLeader = eventLeaderController.text;
-
-    try {
-      await FirebaseFirestore.instance.collection('events').add({
-        'title': eventName,
-        'description': eventDescription,
-        'leader': eventLeader,
-      });
-
-      eventNameController.clear();
-      eventDescriptionController.clear();
-      eventLeaderController.clear();
-    } catch (error) {
-      // Handle error during event creation
-      print('Failed to add event: $error');
-    }
-  }
 
   @override
   void dispose() {
@@ -49,9 +29,6 @@ class _EventsPageState extends State<EventsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Events'),
-      ),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -77,52 +54,7 @@ class _EventsPageState extends State<EventsPage> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Add New Event'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextField(
-                              controller: eventLeaderController,
-                              decoration: InputDecoration(
-                                labelText: 'Event Leader',
-                              ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            TextField(
-                              controller: eventNameController,
-                              decoration: InputDecoration(
-                                labelText: 'Event Name',
-                              ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            TextField(
-                              controller: eventDescriptionController,
-                              decoration: InputDecoration(
-                                labelText: 'Event Description',
-                              ),
-                            ),
-                          ],
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              _addEvent();
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Add Event'),
-                          ),
-                        ],
-                      ),
-                    );
+                    // TODO: Implement functionality for Add Event button
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.blue,
@@ -145,7 +77,7 @@ class _EventsPageState extends State<EventsPage> {
                   ),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('events').snapshots(),
-                    builder:(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(),
@@ -203,7 +135,7 @@ class _EventsPageState extends State<EventsPage> {
                                     title: Text(title),
                                     subtitle: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
+                                      children:[
                                         Text(description),
                                         const SizedBox(height: 4.0),
                                         Text('Leader: $leader'),
@@ -258,9 +190,6 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Event Details'),
-      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -305,6 +234,7 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 }
+
 
 
 
