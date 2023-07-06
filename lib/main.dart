@@ -1,11 +1,8 @@
-import 'dart:io';
-import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sceptixapp/ui/widgets/auth_widget.dart';
+import 'events.dart';
 import 'firebase_options.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'MemberDetails.dart';
 
@@ -21,7 +18,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AuthWidget(),
     );
@@ -37,6 +34,21 @@ class _MyHomePageState extends State<MyHomePage> {
   String sortingField = 'rolePriority'; // Default sorting field
   bool sortDescending = true; // Default sorting order
   var db = FirebaseFirestore.instance;
+  int _selectedIndex = 0;
+
+  void _onBottomNavigationBarItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (_selectedIndex == 0) {
+      // Navigate to the EventsPage
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => EventsPage()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +140,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           selectedItemColor: Colors.grey,
           unselectedItemColor: const Color(0xFFFFFFFF),
+          currentIndex: _selectedIndex,
+          onTap: _onBottomNavigationBarItemTapped,
         ),
       ),
     );
@@ -186,7 +200,7 @@ class GetStudentName extends StatelessWidget {
                         radius: 25,
                         backgroundImage: NetworkImage(data['image']),
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
