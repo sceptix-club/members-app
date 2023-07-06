@@ -1,7 +1,7 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'EventAdd.dart';
+import 'main.dart';
 
 class EventsPage extends StatefulWidget {
   @override
@@ -9,244 +9,269 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
-  var db = FirebaseFirestore.instance;
-  String _title = '';
-  String _description = '';
-  List<Member> _members = [];
-  List<String?> _teamLeaders = [];
-  List<String?> _teamMembers = [];
+  final TextEditingController eventNameController = TextEditingController();
+  final TextEditingController eventDescriptionController =
+      TextEditingController();
+  final TextEditingController eventLeaderController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    fetchMembers();
+  void dispose() {
+    eventNameController.dispose();
+    eventDescriptionController.dispose();
+    eventLeaderController.dispose();
+    super.dispose();
   }
 
-  Future<void> fetchMembers() async {
-    final QuerySnapshot querySnapshot = await db.collection('members').get();
-    final List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/background(temp).png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EventAdd(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'Add New Event',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
+                  ),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('events')
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (snapshot.hasData) {
+                        final List<QueryDocumentSnapshot> documents =
+                            snapshot.data!.docs;
+                        return ListView.separated(
+                          itemCount: documents.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8.0),
+                          itemBuilder: (context, index) {
+                            final Map<String, dynamic>? data = documents[index]
+                                .data() as Map<String, dynamic>?;
 
-    final List<Member> members = documents
-        .map((doc) {
-          final String name = doc['fullName'] as String;
-          final String id = doc.id;
-          return Member(name: name, id: id);
-        })
-        .where((member) => member.name.isNotEmpty)
-        .toList();
+                            if (data == null) {
+                              return const SizedBox.shrink();
+                            }
 
+                            final String title = data['title'] ?? '';
+                            final String description =
+                                data['description'] ?? '';
+                            final String leader = data['leader'] ?? '';
+
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EventDetails(
+                                      eventName: title,
+                                      eventDescription: description,
+                                      eventLeader: leader,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/background(temp).png'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                child: Card(
+                                  child: ListTile(
+                                    leading: Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              'assets/calendar.png'),
+                                        ),
+                                      ),
+                                    ),
+                                    title: Text(title),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(description),
+                                        const SizedBox(height: 4.0),
+                                        Text('Leader: $leader'),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor:
+        const Color(0xFF222222), // Set the overall background color
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_tree_outlined),
+            label: 'Events',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Members',
+          ),
+        ],
+        selectedItemColor: Colors.grey,
+        unselectedItemColor: const Color(0xFFFFFFFF),
+        onTap: (int index) {
+          if (index == 1) {
+            // Navigate to the Home page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyHomePage(),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class EventDetails extends StatefulWidget {
+  final String eventName;
+  final String eventDescription;
+  final String eventLeader;
+
+  const EventDetails({
+    required this.eventName,
+    required this.eventDescription,
+    required this.eventLeader,
+  });
+
+  @override
+  _EventDetailsState createState() => _EventDetailsState();
+}
+
+class _EventDetailsState extends State<EventDetails> {
+  double progress = 0.5; // Set the initial progress value (between 0 and 1)
+
+  void increaseProgress() {
     setState(() {
-      _members = members;
+      if (progress < 1.0) {
+        progress += 0.1; // Increment the progress by 0.1
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Events'),
-      ),
-      body: Padding(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background(temp).png'),
+            fit: BoxFit.cover,
+          ),
+        ),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Event Title',
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _title = value;
-                });
-              },
+            Text(
+              'Event Leader: ${widget.eventLeader}',
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
+                  color: Colors.white),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              'Event Name: ${widget.eventName}',
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              'Event Description: ${widget.eventDescription}',
+              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 16.0),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Event Description',
-              ),
+            Slider(
+              value: progress,
               onChanged: (value) {
                 setState(() {
-                  _description = value;
+                  progress = value;
                 });
               },
-            ),
-            const SizedBox(height: 16.0),
-            if (_members.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Select Team Leader(s):'),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _teamLeaders.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == _teamLeaders.length) {
-                        return Row(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _teamLeaders.add(null);
-                                });
-                              },
-                              child: const Text('Add Team Leader'),
-                            ),
-                            if (index > 0)
-                              IconButton(
-                                icon: Icon(Icons.remove),
-                                onPressed: () {
-                                  setState(() {
-                                    _teamLeaders.removeAt(index);
-                                  });
-                                },
-                              ),
-                          ],
-                        );
-                      }
-                      return Row(
-                        children: [
-                          DropdownButton<String>(
-                            value: _teamLeaders[index],
-                            items: _members.map((member) {
-                              return DropdownMenuItem<String>(
-                                value: member.id,
-                                child: Text(member.name),
-                              );
-                            }).toList(),
-                            onChanged: (String? value) {
-                              setState(() {
-                                _teamLeaders[index] = value;
-                              });
-                            },
-                          ),
-                          if (index > 0)
-                            IconButton(
-                              icon: Icon(Icons.remove),
-                              onPressed: () {
-                                setState(() {
-                                  _teamLeaders.removeAt(index);
-                                });
-                              },
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text('Select Team Member(s):'),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _teamMembers.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == _teamMembers.length) {
-                        return Row(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _teamMembers.add(null);
-                                });
-                              },
-                              child: const Text('Add Team Member'),
-                            ),
-                            if (index > 0)
-                              IconButton(
-                                icon: Icon(Icons.remove),
-                                onPressed: () {
-                                  setState(() {
-                                    _teamMembers.removeAt(index);
-                                  });
-                                },
-                              ),
-                          ],
-                        );
-                      }
-                      return Row(
-                        children: [
-                          DropdownButton<String>(
-                            value: _teamMembers[index],
-                            items: _members.map((member) {
-                              return DropdownMenuItem<String>(
-                                value: member.id,
-                                child: Text(member.name),
-                              );
-                            }).toList(),
-                            onChanged: (String? value) {
-                              setState(() {
-                                _teamMembers[index] = value;
-                              });
-                            },
-                          ),
-                          if (index > 0)
-                            IconButton(
-                              icon: Icon(Icons.remove),
-                              onPressed: () {
-                                setState(() {
-                                  _teamMembers.removeAt(index);
-                                });
-                              },
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                addEventToFirestore();
-              },
-              child: const Text('Add Event'),
+              min: 0.0,
+              max: 1.0,
+              activeColor: Colors.green,
+              inactiveColor: Colors.grey,
             ),
           ],
         ),
       ),
     );
   }
-
-  void addEventToFirestore() {
-    if (_title.isEmpty) {
-      return;
-    }
-
-    final List<String?> selectedTeamLeaders = _teamLeaders
-        .where((leader) => leader != null)
-        .map((leader) => leader!)
-        .toList();
-
-    final List<String?> selectedTeamMembers = _teamMembers
-        .where((leader) => leader != null)
-        .map((leader) => leader!)
-        .toList();
-    // Convert to JSON string
-
-    db.collection('events').add({
-      'title': _title,
-      'description': _description,
-      'teamLeaders': selectedTeamLeaders,
-      'teamMembers': selectedTeamMembers,
-    }).then((value) {
-      print('Event added to Firestore');
-      setState(() {
-        _title = '';
-        _description = '';
-        _teamLeaders = [];
-        _teamMembers = [];
-      });
-    }).catchError((error) {
-      print('Failed to add event: $error');
-    });
-  }
-}
-
-class Member {
-  final String name;
-  final String id;
-
-  Member({required this.name, required this.id});
 }

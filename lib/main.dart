@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sceptixapp/ui/widgets/auth_widget.dart';
-import 'events.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'MemberDetails.dart';
-import 'event.dart';
+import 'Events.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,21 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
   String sortingField = 'rolePriority'; // Default sorting field
   bool sortDescending = true; // Default sorting order
   var db = FirebaseFirestore.instance;
-  int _selectedIndex = 0;
-
-  void _onBottomNavigationBarItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    if (_selectedIndex == 0) {
-      // Navigate to the EventsPage
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => EventsPage()),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
