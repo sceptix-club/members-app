@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -36,11 +35,11 @@ class EventData extends StatelessWidget {
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
 
                   if (!snapshot.hasData || !snapshot.data!.exists) {
-                    return Text('Event data not found');
+                    return const Text('Event data not found');
                   }
 
                   final eventData = snapshot.data!.data() as Map<String, dynamic>;
