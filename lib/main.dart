@@ -1,14 +1,10 @@
-import 'dart:io';
-import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sceptixapp/ui/widgets/auth_widget.dart';
 import 'firebase_options.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'MemberDetails.dart';
-import 'event.dart';
+import 'Events.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +18,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AuthWidget(),
     );
@@ -198,7 +194,7 @@ class GetStudentName extends StatelessWidget {
                         radius: 25,
                         backgroundImage: NetworkImage(data['image']),
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

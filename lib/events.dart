@@ -1,12 +1,7 @@
-import 'dart:io';
-import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'EventAdd.dart';
+import 'main.dart';
 
 class EventsPage extends StatefulWidget {
   @override
@@ -15,7 +10,8 @@ class EventsPage extends StatefulWidget {
 
 class _EventsPageState extends State<EventsPage> {
   final TextEditingController eventNameController = TextEditingController();
-  final TextEditingController eventDescriptionController = TextEditingController();
+  final TextEditingController eventDescriptionController =
+      TextEditingController();
   final TextEditingController eventLeaderController = TextEditingController();
 
   @override
@@ -34,9 +30,9 @@ class _EventsPageState extends State<EventsPage> {
         children: [
           Positioned.fill(
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: const AssetImage('assets/background(temp).png'),
+                  image: AssetImage('assets/background(temp).png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -54,7 +50,12 @@ class _EventsPageState extends State<EventsPage> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO: Implement functionality for Add Event button
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EventAdd(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.blue,
@@ -72,31 +73,38 @@ class _EventsPageState extends State<EventsPage> {
               ),
               Expanded(
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.transparent,
                   ),
                   child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection('events').snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    stream: FirebaseFirestore.instance
+                        .collection('events')
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
                       if (snapshot.hasData) {
-                        final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+                        final List<QueryDocumentSnapshot> documents =
+                            snapshot.data!.docs;
                         return ListView.separated(
                           itemCount: documents.length,
-                          separatorBuilder: (context, index) => const SizedBox(height: 8.0),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8.0),
                           itemBuilder: (context, index) {
-                            final Map<String, dynamic>? data = documents[index].data() as Map<String, dynamic>?;
+                            final Map<String, dynamic>? data = documents[index]
+                                .data() as Map<String, dynamic>?;
 
                             if (data == null) {
                               return const SizedBox.shrink();
                             }
 
                             final String title = data['title'] ?? '';
-                            final String description = data['description'] ?? '';
+                            final String description =
+                                data['description'] ?? '';
                             final String leader = data['leader'] ?? '';
 
                             return GestureDetector(
@@ -113,9 +121,10 @@ class _EventsPageState extends State<EventsPage> {
                                 );
                               },
                               child: Container(
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   image: DecorationImage(
-                                    image: const AssetImage('assets/background(temp).png'),
+                                    image: AssetImage(
+                                        'assets/background(temp).png'),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -124,18 +133,20 @@ class _EventsPageState extends State<EventsPage> {
                                     leading: Container(
                                       width: 48,
                                       height: 48,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: const AssetImage('assets/calendar.png'),
+                                          image: AssetImage(
+                                              'assets/calendar.png'),
                                         ),
                                       ),
                                     ),
                                     title: Text(title),
                                     subtitle: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children:[
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
                                         Text(description),
                                         const SizedBox(height: 4.0),
                                         Text('Leader: $leader'),
@@ -156,6 +167,33 @@ class _EventsPageState extends State<EventsPage> {
             ],
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor:
+        const Color(0xFF222222), // Set the overall background color
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_tree_outlined),
+            label: 'Events',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Members',
+          ),
+        ],
+        selectedItemColor: Colors.grey,
+        unselectedItemColor: const Color(0xFFFFFFFF),
+        onTap: (int index) {
+          if (index == 1) {
+            // Navigate to the Home page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyHomePage(),
+              ),
+            );
+          }
+        },
       ),
     );
   }
