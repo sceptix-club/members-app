@@ -7,7 +7,6 @@ import 'firebase_options.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 class EventsPage extends StatefulWidget {
   @override
   _EventsPageState createState() => _EventsPageState();
@@ -51,7 +50,7 @@ class _EventsPageState extends State<EventsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Events'),
+        title: const Text('Events'),
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -60,7 +59,7 @@ class _EventsPageState extends State<EventsPage> {
             child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/background(temp).png'),
+                  image: const AssetImage('assets/background(temp).png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -70,8 +69,8 @@ class _EventsPageState extends State<EventsPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                margin: EdgeInsets.all(16.0),
-                padding: EdgeInsets.all(16.0),
+                margin: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(8.0),
@@ -81,7 +80,7 @@ class _EventsPageState extends State<EventsPage> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Add New Event'),
+                        title: const Text('Add New Event'),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -91,14 +90,14 @@ class _EventsPageState extends State<EventsPage> {
                                 labelText: 'Event Leader',
                               ),
                             ),
-                            SizedBox(height: 8.0),
+                            const SizedBox(height: 8.0),
                             TextField(
                               controller: eventNameController,
                               decoration: InputDecoration(
                                 labelText: 'Event Name',
                               ),
                             ),
-                            SizedBox(height: 8.0),
+                            const SizedBox(height: 8.0),
                             TextField(
                               controller: eventDescriptionController,
                               decoration: InputDecoration(
@@ -112,14 +111,14 @@ class _EventsPageState extends State<EventsPage> {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: Text('Cancel'),
+                            child: const Text('Cancel'),
                           ),
                           ElevatedButton(
                             onPressed: () {
                               _addEvent();
                               Navigator.pop(context);
                             },
-                            child: Text('Add Event'),
+                            child: const Text('Add Event'),
                           ),
                         ],
                       ),
@@ -127,13 +126,13 @@ class _EventsPageState extends State<EventsPage> {
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.blue,
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
                     elevation: 2.0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Add New Event',
                     style: TextStyle(fontSize: 16.0),
                   ),
@@ -146,9 +145,9 @@ class _EventsPageState extends State<EventsPage> {
                   ),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('events').snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    builder:(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
@@ -156,12 +155,12 @@ class _EventsPageState extends State<EventsPage> {
                         final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
                         return ListView.separated(
                           itemCount: documents.length,
-                          separatorBuilder: (context, index) => SizedBox(height: 8.0),
+                          separatorBuilder: (context, index) => const SizedBox(height: 8.0),
                           itemBuilder: (context, index) {
                             final Map<String, dynamic>? data = documents[index].data() as Map<String, dynamic>?;
 
                             if (data == null) {
-                              return SizedBox.shrink();
+                              return const SizedBox.shrink();
                             }
 
                             final String title = data['title'] ?? '';
@@ -184,7 +183,7 @@ class _EventsPageState extends State<EventsPage> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: AssetImage('assets/background(temp).png'),
+                                    image: const AssetImage('assets/background(temp).png'),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -197,7 +196,7 @@ class _EventsPageState extends State<EventsPage> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: AssetImage('assets/calendar.png'),
+                                          image: const AssetImage('assets/calendar.png'),
                                         ),
                                       ),
                                     ),
@@ -206,7 +205,7 @@ class _EventsPageState extends State<EventsPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(description),
-                                        SizedBox(height: 4.0),
+                                        const SizedBox(height: 4.0),
                                         Text('Leader: $leader'),
                                       ],
                                     ),
@@ -217,7 +216,7 @@ class _EventsPageState extends State<EventsPage> {
                           },
                         );
                       }
-                      return SizedBox.shrink();
+                      return const SizedBox.shrink();
                     },
                   ),
                 ),
@@ -235,7 +234,11 @@ class EventDetails extends StatefulWidget {
   final String eventDescription;
   final String eventLeader;
 
-  EventDetails({required this.eventName, required this.eventDescription, required this.eventLeader});
+  const EventDetails({
+    required this.eventName,
+    required this.eventDescription,
+    required this.eventLeader,
+  });
 
   @override
   _EventDetailsState createState() => _EventDetailsState();
@@ -256,34 +259,34 @@ class _EventDetailsState extends State<EventDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Event Details'),
+        title: const Text('Event Details'),
       ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/background(temp).png'),
+            image: const AssetImage('assets/background(temp).png'),
             fit: BoxFit.cover,
           ),
         ),
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Event Leader: ${widget.eventLeader}',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.white),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.white),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
               'Event Name: ${widget.eventName}',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
               'Event Description: ${widget.eventDescription}',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Slider(
               value: progress,
               onChanged: (value) {
