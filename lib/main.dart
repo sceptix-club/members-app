@@ -5,6 +5,7 @@ import 'events.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'MemberDetails.dart';
+import 'event.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -140,8 +141,17 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           selectedItemColor: Colors.grey,
           unselectedItemColor: const Color(0xFFFFFFFF),
-          currentIndex: _selectedIndex,
-          onTap: _onBottomNavigationBarItemTapped,
+       onTap: (int index) {
+          if (index == 0) {
+              // Navigate to the Events page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EventsPage(),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
