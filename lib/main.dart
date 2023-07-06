@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:sceptixapp/event.dart';
 import 'firebase_options.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sceptixapp/memdetails.dart';
+import 'package:flutter/material.dart';
+import'EventDetails.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -114,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: 'Events',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
@@ -123,6 +127,17 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           selectedItemColor: Colors.grey,
           unselectedItemColor: const Color(0xFFFFFFFF),
+       onTap: (int index) {
+          if (index == 0) {
+              // Navigate to the Events page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EventsPage(),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
