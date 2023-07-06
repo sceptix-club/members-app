@@ -190,50 +190,65 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: const AssetImage('assets/background(temp).png'),
-            fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: const AssetImage('assets/background(temp).png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context); // Navigate back to the previous page
+                    },
+                    color: Colors.grey, // Set the color of the back arrow to grey
+                  ),
+                ),
+                Text(
+                  'Event Leader: ${widget.eventLeader}',
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.white),
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  'Event Name: ${widget.eventName}',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  'Event Description: ${widget.eventDescription}',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(height: 16.0),
+                Slider(
+                  value: progress,
+                  onChanged: (value) {
+                    setState(() {
+                      progress = value;
+                    });
+                  },
+                  min: 0.0,
+                  max: 1.0,
+                  activeColor: Colors.green,
+                  inactiveColor: Colors.grey,
+                ),
+              ],
+            ),
           ),
-        ),
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Event Leader: ${widget.eventLeader}',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.white),
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              'Event Name: ${widget.eventName}',
-              style: const TextStyle(color: Colors.white),
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              'Event Description: ${widget.eventDescription}',
-              style: const TextStyle(color: Colors.white),
-            ),
-            const SizedBox(height: 16.0),
-            Slider(
-              value: progress,
-              onChanged: (value) {
-                setState(() {
-                  progress = value;
-                });
-              },
-              min: 0.0,
-              max: 1.0,
-              activeColor: Colors.green,
-              inactiveColor: Colors.grey,
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
 }
+
 
 
 
