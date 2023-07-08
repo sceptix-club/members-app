@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'EventAdd.dart';
 import 'main.dart';
+import 'package:intl/intl.dart';
 
 class EventsPage extends StatefulWidget {
   @override
@@ -10,8 +11,7 @@ class EventsPage extends StatefulWidget {
 
 class _EventsPageState extends State<EventsPage> {
   final TextEditingController eventNameController = TextEditingController();
-  final TextEditingController eventDescriptionController =
-      TextEditingController();
+  final TextEditingController eventDescriptionController = TextEditingController();
   final TextEditingController eventLeaderController = TextEditingController();
 
   @override
@@ -24,6 +24,10 @@ class _EventsPageState extends State<EventsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentDate = DateTime.now();
+    final dayFormat = DateFormat('EEEE');
+    final dateFormat = DateFormat('MMM dd, yyyy');
+
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -41,6 +45,28 @@ class _EventsPageState extends State<EventsPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: 16.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    dayFormat.format(currentDate),
+                    style: TextStyle(
+                      fontSize: 36.0,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    dateFormat.format(currentDate),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
               Container(
                 margin: const EdgeInsets.all(16.0),
                 padding: const EdgeInsets.all(16.0),
@@ -71,6 +97,7 @@ class _EventsPageState extends State<EventsPage> {
                   ),
                 ),
               ),
+              const SizedBox(height: 16.0),
               Expanded(
                 child: Container(
                   decoration: const BoxDecoration(
@@ -82,7 +109,8 @@ class _EventsPageState extends State<EventsPage> {
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
@@ -93,10 +121,11 @@ class _EventsPageState extends State<EventsPage> {
                         return ListView.separated(
                           itemCount: documents.length,
                           separatorBuilder: (context, index) =>
-                              const SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           itemBuilder: (context, index) {
-                            final Map<String, dynamic>? data = documents[index]
-                                .data() as Map<String, dynamic>?;
+                            final Map<String, dynamic>? data =
+                            documents[index].data()
+                            as Map<String, dynamic>?;
 
                             if (data == null) {
                               return const SizedBox.shrink();
@@ -145,7 +174,7 @@ class _EventsPageState extends State<EventsPage> {
                                     title: Text(title),
                                     subtitle: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(description),
                                         const SizedBox(height: 4.0),
@@ -154,7 +183,7 @@ class _EventsPageState extends State<EventsPage> {
                                     ),
                                   ),
                                 ),
-                              ),
+                                ),
                             );
                           },
                         );
@@ -169,8 +198,7 @@ class _EventsPageState extends State<EventsPage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor:
-        const Color(0xFF222222), // Set the overall background color
+        backgroundColor: const Color(0xFF222222),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.account_tree_outlined),
@@ -185,7 +213,6 @@ class _EventsPageState extends State<EventsPage> {
         unselectedItemColor: const Color(0xFFFFFFFF),
         onTap: (int index) {
           if (index == 1) {
-            // Navigate to the Home page
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -198,6 +225,7 @@ class _EventsPageState extends State<EventsPage> {
     );
   }
 }
+
 class EventDetails extends StatelessWidget {
   final String eventName;
   final String eventDescription;
@@ -267,7 +295,7 @@ class EventDetails extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 24.0,
-                          backgroundImage: AssetImage('assets/lead.jpg'), 
+                          backgroundImage: AssetImage('assets/lead.jpg'),
                         ),
                         const SizedBox(width: 8.0),
                         Text(
