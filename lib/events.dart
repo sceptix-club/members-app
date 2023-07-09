@@ -145,9 +145,9 @@ class _EventsPageState extends State<EventsPage> {
                     ),
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           'Ongoing Events',
-                          style: const TextStyle(fontSize: 16.0),
+                          style: TextStyle(fontSize: 16.0),
                         ),
                         Text(
                           ongoingEventsCount.toString(),

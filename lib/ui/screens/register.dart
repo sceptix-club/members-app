@@ -1,7 +1,11 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lottie/lottie.dart';
+import 'package:rive/rive.dart';
 import 'package:sceptixapp/main.dart';
 import 'package:sceptixapp/ui/screens/phone_auth.dart';
 import '../../globals/common.dart';
@@ -86,28 +90,41 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/final_bg.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.4),
-              BlendMode.colorBurn,
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    "assets/images/podium-abstract-splines-on-white-260nw-2121765374.jpg"),
+                fit: BoxFit.fill,
+              ),
             ),
           ),
-        ),
-        child: Center(
-          child: Card(
-            color: Color(0xFFFCEEF1),
-            margin: EdgeInsets.fromLTRB(40, 105, 40, 105),
-            //borderOnForeground: true,
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: const SizedBox(),
+            ),
+          ),
+          const RiveAnimation.asset(
+            "assets/RiveAssets/shapes.riv",
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+              child: const SizedBox(),
+            ),
+          ),
+          Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: 25.0),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 32.0),
                     child: Text(
@@ -120,7 +137,11 @@ class _RegisterState extends State<Register> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(height: 25.0),
+                  Lottie.network(
+                    'https://assets7.lottiefiles.com/packages/lf20_lgvdhvlz.json',
+                    height: 220, // Adjust the height as needed
+                    width: 250,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: TextFormField(
@@ -172,12 +193,12 @@ class _RegisterState extends State<Register> {
                   ),
                   const SizedBox(height: 15.0),
                   Padding(
-                    padding: const EdgeInsets.only(right: 13, left: 16),
+                    padding: const EdgeInsets.only(right: 63, left: 70),
                     child: ElevatedButton.icon(
                       onPressed: _signupWithEmailPassword,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFF77D8E),
-                        minimumSize: const Size(double.infinity, 56),
+                        minimumSize: const Size(double.infinity, 46),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
@@ -274,7 +295,7 @@ class _RegisterState extends State<Register> {
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -1,7 +1,10 @@
+import 'dart:ui';
+import 'package:lottie/lottie.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rive/rive.dart';
 import 'package:sceptixapp/main.dart';
 import 'package:sceptixapp/ui/screens/phone_auth.dart';
 import 'package:sceptixapp/ui/screens/register.dart';
@@ -12,15 +15,13 @@ import '../widgets/login_card.dart';
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
-
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-
-  TextEditingController _emailCtrl = TextEditingController();
-  TextEditingController _pwdCtrl = TextEditingController();
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _pwdCtrl = TextEditingController();
   String _email = '';
   String _password = '';
 
@@ -33,7 +34,8 @@ class _LoginState extends State<Login> {
 
   void _loginWithEmailPassword(String email, String password) async {
     try {
-      final credentials = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final credentials =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -47,7 +49,7 @@ class _LoginState extends State<Login> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (cxt) => MyHomePage()),
-                (route) => false,
+            (route) => false,
           );
         }
       }
@@ -68,13 +70,13 @@ class _LoginState extends State<Login> {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication? gAuth =
-      await googleUser?.authentication;
+          await googleUser?.authentication;
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: gAuth?.accessToken,
         idToken: gAuth?.idToken,
       );
       final firebaseCredential =
-      await FirebaseAuth.instance.signInWithCredential(credential);
+          await FirebaseAuth.instance.signInWithCredential(credential);
       final user = firebaseCredential.user;
       if (user == null) {
         if (mounted) {
@@ -85,7 +87,7 @@ class _LoginState extends State<Login> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (cxt) => MyHomePage()),
-                (route) => false,
+            (route) => false,
           );
         }
       }
@@ -98,28 +100,41 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/final_bg.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.4),
-              BlendMode.colorBurn,
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    "assets/images/podium-abstract-splines-on-white-260nw-2121765374.jpg"),
+                fit: BoxFit.fill,
+              ),
             ),
           ),
-        ),
-        child: Center(
-          child: Card(
-            color: Color(0xFFFCEEF1),
-            margin: EdgeInsets.fromLTRB(40, 80, 40, 80),
-            //borderOnForeground: true,
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: const SizedBox(),
+            ),
+          ),
+          const RiveAnimation.asset(
+            "assets/RiveAssets/shapes.riv",
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+              child: const SizedBox(),
+            ),
+          ),
+          Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: 25.0),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 32.0),
                     child: Text(
@@ -132,15 +147,19 @@ class _LoginState extends State<Login> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(height: 25.0),
+                  Lottie.network(
+                    'https://assets6.lottiefiles.com/packages/lf20_mjlh3hcy.json',
+                    height: 220, // Adjust the height as needed
+                    width: 250,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: TextFormField(
                       keyboardType: TextInputType.emailAddress,
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                         hintText: 'Email',
-                        hintStyle: TextStyle(color: Colors.grey),
+                        hintStyle: const TextStyle(color: Colors.grey),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.3),
                         enabledBorder: const OutlineInputBorder(
@@ -167,10 +186,10 @@ class _LoginState extends State<Login> {
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: TextFormField(
                       obscureText: true,
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                         hintText: 'Password',
-                        hintStyle: TextStyle(color: Colors.grey),
+                        hintStyle: const TextStyle(color: Colors.grey),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.3),
                         enabledBorder: const OutlineInputBorder(
@@ -194,14 +213,14 @@ class _LoginState extends State<Login> {
                   ),
                   const SizedBox(height: 15.0),
                   Padding(
-                    padding: const EdgeInsets.only(right: 13, left: 14),
+                    padding: const EdgeInsets.only(right: 63, left: 68),
                     child: ElevatedButton.icon(
-                      onPressed: (){
-                          _loginWithEmailPassword(_email, _password);
+                      onPressed: () {
+                        _loginWithEmailPassword(_email, _password);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFF77D8E),
-                        minimumSize: const Size(double.infinity, 56),
+                        minimumSize: const Size(double.infinity, 46),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
@@ -319,7 +338,7 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
