@@ -1,5 +1,7 @@
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 import 'EventAdd.dart';
 import 'main.dart';
 import 'package:intl/intl.dart';
@@ -50,39 +52,56 @@ class _EventsPageState extends State<EventsPage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/background(temp).png'),
-                  fit: BoxFit.cover,
-                ),
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    "assets/images/podium-abstract-splines-on-white-260nw-2121765374.jpg"),
+                fit: BoxFit.fill,
               ),
+            ),
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: const SizedBox(),
+            ),
+          ),
+          const RiveAnimation.asset(
+            "assets/RiveAssets/shapes.riv",
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+              child: const SizedBox(),
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 16.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    dayFormat.format(currentDate),
-                    style: const TextStyle(
-                      fontSize: 36.0,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
+              Padding(
+                padding:
+                    const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      dayFormat.format(currentDate),
+                      style: const TextStyle(
+                        fontSize: 36.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Text(
-                    dateFormat.format(currentDate),
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.grey,
+                    Text(
+                      dateFormat.format(currentDate),
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 16.0),
               Row(
@@ -102,11 +121,13 @@ class _EventsPageState extends State<EventsPage> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.grey,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      primary: Colors.transparent,
+                      padding: const EdgeInsets.only(
+                          left: 10.0, right: 10, top: 16, bottom: 16),
                       elevation: 2.0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
+                        side: const BorderSide(color: Colors.black),
                       ),
                     ),
                     child: Column(
@@ -136,11 +157,13 @@ class _EventsPageState extends State<EventsPage> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.grey,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      primary: Colors.transparent,
+                      padding: const EdgeInsets.only(
+                          left: 10.0, right: 10, top: 16, bottom: 16),
                       elevation: 2.0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
+                        side: const BorderSide(color: Colors.black),
                       ),
                     ),
                     child: Column(
@@ -159,7 +182,34 @@ class _EventsPageState extends State<EventsPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16.0),
+              Container(
+                margin: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EventAdd(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: const Color(0xFFF77D8E),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text('Add New Event',
+                      style: TextStyle(fontSize: 16.0)),
+                ),
+              ),
               Expanded(
                 child: Container(
                   decoration: const BoxDecoration(
@@ -209,37 +259,41 @@ class _EventsPageState extends State<EventsPage> {
                                   ),
                                 );
                               },
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                        'assets/background(temp).png'),
-                                    fit: BoxFit.cover,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    border: Border.all(
+                                        color: Colors
+                                            .black), // Add border color and width
+                                    borderRadius: BorderRadius.circular(8.0),
                                   ),
-                                ),
-                                child: Card(
-                                  child: ListTile(
-                                    leading: Container(
-                                      width: 48,
-                                      height: 48,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image:
-                                              AssetImage('assets/calendar.png'),
+                                  child: Card(
+                                    color: Colors.transparent,
+                                    child: ListTile(
+                                      leading: Container(
+                                        width: 48,
+                                        height: 48,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image:
+                                                AssetImage('assets/calendar.png'),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    title: Text(title),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(description),
-                                        const SizedBox(height: 4.0),
-                                        Text('Leader: $leader'),
-                                      ],
+                                      title: Text(title),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(description),
+                                          const SizedBox(height: 4.0),
+                                          Text('Leader: $leader'),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -251,35 +305,6 @@ class _EventsPageState extends State<EventsPage> {
                       return const SizedBox.shrink();
                     },
                   ),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              Container(
-                margin: const EdgeInsets.all(16.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EventAdd(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    elevation: 2.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: const Text('Add New Event',
-                      style: TextStyle(fontSize: 16.0)),
                 ),
               ),
               const SizedBox(height: 16.0),
