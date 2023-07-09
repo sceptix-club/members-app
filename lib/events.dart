@@ -5,14 +5,32 @@ import 'main.dart';
 import 'package:intl/intl.dart';
 
 class EventsPage extends StatefulWidget {
+  const EventsPage({Key? key}) : super(key: key);
+
   @override
   _EventsPageState createState() => _EventsPageState();
 }
 
 class _EventsPageState extends State<EventsPage> {
   final TextEditingController eventNameController = TextEditingController();
-  final TextEditingController eventDescriptionController = TextEditingController();
+  final TextEditingController eventDescriptionController =
+      TextEditingController();
   final TextEditingController eventLeaderController = TextEditingController();
+
+  int completedEventsCount = 5;
+  int ongoingEventsCount = 10;
+
+  void updateCompletedEventsCount(int count) {
+    setState(() {
+      completedEventsCount = count;
+    });
+  }
+
+  void updateOngoingEventsCount(int count) {
+    setState(() {
+      ongoingEventsCount = count;
+    });
+  }
 
   @override
   void dispose() {
@@ -51,7 +69,7 @@ class _EventsPageState extends State<EventsPage> {
                 children: [
                   Text(
                     dayFormat.format(currentDate),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 36.0,
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,
@@ -59,7 +77,7 @@ class _EventsPageState extends State<EventsPage> {
                   ),
                   Text(
                     dateFormat.format(currentDate),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                       color: Colors.grey,
                     ),
@@ -67,35 +85,79 @@ class _EventsPageState extends State<EventsPage> {
                 ],
               ),
               const SizedBox(height: 16.0),
-              Container(
-                margin: const EdgeInsets.all(16.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EventAdd(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle completed events button press
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CompletedEventsPage(
+                            updateCompletedEventsCount:
+                                updateCompletedEventsCount,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey,
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    elevation: 2.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Completed Events',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        Text(
+                          completedEventsCount.toString(),
+                          style: const TextStyle(
+                              fontSize: 24.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ),
-                  child: const Text(
-                    'Add New Event',
-                    style: TextStyle(fontSize: 16.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle ongoing events button press
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OngoingEventsPage(
+                            updateOngoingEventsCount: updateOngoingEventsCount,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey,
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Ongoing Events',
+                          style: const TextStyle(fontSize: 16.0),
+                        ),
+                        Text(
+                          ongoingEventsCount.toString(),
+                          style: const TextStyle(
+                              fontSize: 24.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(height: 16.0),
               Expanded(
@@ -109,8 +171,7 @@ class _EventsPageState extends State<EventsPage> {
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
@@ -121,11 +182,10 @@ class _EventsPageState extends State<EventsPage> {
                         return ListView.separated(
                           itemCount: documents.length,
                           separatorBuilder: (context, index) =>
-                          const SizedBox(height: 8.0),
+                              const SizedBox(height: 8.0),
                           itemBuilder: (context, index) {
-                            final Map<String, dynamic>? data =
-                            documents[index].data()
-                            as Map<String, dynamic>?;
+                            final Map<String, dynamic>? data = documents[index]
+                                .data() as Map<String, dynamic>?;
 
                             if (data == null) {
                               return const SizedBox.shrink();
@@ -166,15 +226,15 @@ class _EventsPageState extends State<EventsPage> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: AssetImage(
-                                              'assets/calendar.png'),
+                                          image:
+                                              AssetImage('assets/calendar.png'),
                                         ),
                                       ),
                                     ),
                                     title: Text(title),
                                     subtitle: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(description),
                                         const SizedBox(height: 4.0),
@@ -183,7 +243,7 @@ class _EventsPageState extends State<EventsPage> {
                                     ),
                                   ),
                                 ),
-                                ),
+                              ),
                             );
                           },
                         );
@@ -193,6 +253,36 @@ class _EventsPageState extends State<EventsPage> {
                   ),
                 ),
               ),
+              const SizedBox(height: 16.0),
+              Container(
+                margin: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EventAdd(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text('Add New Event',
+                      style: TextStyle(fontSize: 16.0)),
+                ),
+              ),
+              const SizedBox(height: 16.0),
             ],
           ),
         ],
@@ -232,10 +322,11 @@ class EventDetails extends StatelessWidget {
   final String eventLeader;
 
   const EventDetails({
+    Key? key,
     required this.eventName,
     required this.eventDescription,
     required this.eventLeader,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -243,8 +334,8 @@ class EventDetails extends StatelessWidget {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
-              image: const DecorationImage(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
                 image: AssetImage('assets/background(temp).png'),
                 fit: BoxFit.cover,
               ),
@@ -258,9 +349,11 @@ class EventDetails extends StatelessWidget {
                   child: IconButton(
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
-                      Navigator.pop(context); // Navigate back to the previous page
+                      Navigator.pop(
+                          context); // Navigate back to the previous page
                     },
-                    color: Colors.grey, // Set the color of the back arrow to grey
+                    color:
+                        Colors.grey, // Set the color of the back arrow to grey
                   ),
                 ),
                 const SizedBox(height: 16.0),
@@ -292,16 +385,12 @@ class EventDetails extends StatelessWidget {
                     const SizedBox(height: 8.0),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         CircleAvatar(
                           radius: 24.0,
                           backgroundImage: AssetImage('assets/lead.jpg'),
                         ),
-                        const SizedBox(width: 8.0),
-                        Text(
-                          eventLeader,
-                          style: const TextStyle(color: Colors.white),
-                        ),
+                        SizedBox(width: 8.0),
                       ],
                     ),
                   ],
@@ -326,19 +415,89 @@ class EventDetails extends StatelessWidget {
   }
 }
 
+class CompletedEventsPage extends StatefulWidget {
+  final Function(int) updateCompletedEventsCount;
 
+  const CompletedEventsPage(
+      {Key? key, required this.updateCompletedEventsCount})
+      : super(key: key);
 
+  @override
+  _CompletedEventsPageState createState() => _CompletedEventsPageState();
+}
 
+class _CompletedEventsPageState extends State<CompletedEventsPage> {
+  int completedEventsCount = 5;
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Completed Events'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Completed Events Count: $completedEventsCount',
+              style: const TextStyle(fontSize: 24.0),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  completedEventsCount++; // Increment the completed events count
+                  widget.updateCompletedEventsCount(completedEventsCount);
+                });
+              },
+              child: const Text('Increment Count'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
+class OngoingEventsPage extends StatefulWidget {
+  final Function(int) updateOngoingEventsCount;
 
+  const OngoingEventsPage({Key? key, required this.updateOngoingEventsCount})
+      : super(key: key);
 
+  @override
+  _OngoingEventsPageState createState() => _OngoingEventsPageState();
+}
 
+class _OngoingEventsPageState extends State<OngoingEventsPage> {
+  int ongoingEventsCount = 10;
 
-
-
-
-
-
-
-
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ongoing Events'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Ongoing Events Count: $ongoingEventsCount',
+              style: const TextStyle(fontSize: 24.0),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  ongoingEventsCount++; // Increment the ongoing events count
+                  widget.updateOngoingEventsCount(ongoingEventsCount);
+                });
+              },
+              child: const Text('Increment Count'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
