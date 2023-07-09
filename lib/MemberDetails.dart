@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class MemberDetails extends StatelessWidget {
   final Map<String, dynamic> memberData;
@@ -15,9 +18,25 @@ class MemberDetails extends StatelessWidget {
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/background(temp).png'),
-                  fit: BoxFit.cover,
+                  image: AssetImage(
+                      "assets/images/podium-abstract-splines-on-white-260nw-2121765374.jpg"),
+                  fit: BoxFit.fill,
                 ),
+              ),
+            ),
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: const SizedBox(),
+              ),
+            ),
+            const RiveAnimation.asset(
+              "assets/RiveAssets/shapes.riv",
+            ),
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                child: const SizedBox(),
               ),
             ),
             Container(
