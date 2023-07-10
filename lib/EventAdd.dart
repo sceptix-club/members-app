@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EventAdd extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class _EventsAddState extends State<EventAdd> {
   List<Member> _members = [];
   List<String?> _teamLeaders = [];
   List<String?> _teamMembers = [];
+  DateTime? _selectedDate; // Selected date variable
 
   @override
   void initState() {
@@ -70,6 +72,28 @@ class _EventsAddState extends State<EventAdd> {
                 });
               },
             ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2030),
+                ).then((selectedDate) {
+                  if (selectedDate != null) {
+                    setState(() {
+                      _selectedDate = selectedDate;
+                    });
+                  }
+                });
+              },
+              child: const Text('Select Date'),
+            ),
+            if (_selectedDate != null)
+              Text(
+                'Selected Date: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}',
+              ),
             const SizedBox(height: 16.0),
             if (_members.isNotEmpty)
               Column(
@@ -194,7 +218,6 @@ class _EventsAddState extends State<EventAdd> {
                   ),
                 ],
               ),
-            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 addEventToFirestore();
@@ -208,7 +231,10 @@ class _EventsAddState extends State<EventAdd> {
   }
 
   void addEventToFirestore() {
-    if (_title.isEmpty) {
+    if (_title.isEmpty ||
+        _description.isEmpty ||
+        _teamLeaders.isEmpty ||
+        _selectedDate == null) {
       return;
     }
 
@@ -221,13 +247,13 @@ class _EventsAddState extends State<EventAdd> {
         .where((leader) => leader != null)
         .map((leader) => leader!)
         .toList();
-    // Convert to JSON string
 
     db.collection('events').add({
       'title': _title,
       'description': _description,
       'teamLeaders': selectedTeamLeaders,
       'teamMembers': selectedTeamMembers,
+      'date': _selectedDate,
     }).then((value) {
       print('Event added to Firestore');
       setState(() {
@@ -235,6 +261,7 @@ class _EventsAddState extends State<EventAdd> {
         _description = '';
         _teamLeaders = [];
         _teamMembers = [];
+        _selectedDate = null;
       });
     }).catchError((error) {
       print('Failed to add event: $error');

@@ -176,9 +176,9 @@ class GetStudentName extends StatelessWidget {
     CollectionReference members =
         FirebaseFirestore.instance.collection('members');
 
-    return FutureBuilder<DocumentSnapshot>(
+    return StreamBuilder<DocumentSnapshot>(
       // Fetching data from the documentId specified for the student
-      future: members.doc(documentId).get(),
+      stream: members.doc(documentId).snapshots(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         // Error Handling conditions
@@ -186,12 +186,12 @@ class GetStudentName extends StatelessWidget {
           return const Text("Something went wrong");
         }
 
-        if (snapshot.hasData && !snapshot.data!.exists) {
+        if (!snapshot.hasData || !snapshot.data!.exists) {
           return const Text("Document does not exist");
         }
 
         // Data is output to the user
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.active) {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
 
@@ -202,7 +202,8 @@ class GetStudentName extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => MemberDetails(
-                      data), // Pass the data to the member details page
+                    {...data, 'id': documentId}, // Include the document ID in the member's data
+                  ),
                 ),
               );
             },
@@ -245,9 +246,10 @@ class GetStudentName extends StatelessWidget {
                           Text(
                             data['score'].toString(),
                             style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.deepOrange,
-                                fontWeight: FontWeight.w900),
+                              fontSize: 20,
+                              color: Colors.deepOrange,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
                         ],
                       ),
