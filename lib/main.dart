@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:rive/rive.dart';
 import 'package:sceptixapp/ui/widgets/auth_widget.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -39,76 +42,98 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/background(temp).png'),
-                fit: BoxFit.cover,// Ensure the image covers the entire container
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                      "assets/images/podium-abstract-splines-on-white-260nw-2121765374.jpg"),
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  DropdownButtonFormField<String>(
-                    value: sortingField,
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors
-                          .white, // You can further customize the appearance using other InputDecoration properties
-                    ),
-                    items: const [
-                      DropdownMenuItem<String>(
-                        value: 'rolePriority',
-                        child: Text('Sort by Role'),
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: const SizedBox(),
+              ),
+            ),
+            const RiveAnimation.asset(
+              "assets/RiveAssets/shapes.riv",
+            ),
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                child: const SizedBox(),
+              ),
+            ),
+            Container(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      DropdownButtonFormField<String>(
+                        value: sortingField,
+                        decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: Colors
+                              .white, // You can further customize the appearance using other InputDecoration properties
+                        ),
+                        items: const [
+                          DropdownMenuItem<String>(
+                            value: 'rolePriority',
+                            child: Text('Sort by Role'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'score',
+                            child: Text('Sort by Score'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            // Update the sorting fie ld
+                            setState(() {
+                              sortingField = value;
+                              // Update the sorting order
+                              sortDescending = value == 'rolePriority';
+                            });
+                          }
+                        },
                       ),
-                      DropdownMenuItem<String>(
-                        value: 'score',
-                        child: Text('Sort by Score'),
+                      StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('members')
+                            .orderBy(sortingField, descending: sortDescending)
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Text('Loading...');
+                          }
+
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              DocumentSnapshot document =
+                                  snapshot.data!.docs[index];
+                              String documentId = document.id;
+                              return GetStudentName(documentId);
+                            },
+                          );
+                        },
                       ),
                     ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        // Update the sorting fie ld
-                        setState(() {
-                          sortingField = value;
-                          // Update the sorting order
-                          sortDescending = value == 'rolePriority';
-                        });
-                      }
-                    },
                   ),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('members')
-                        .orderBy(sortingField, descending: sortDescending)
-                        .snapshots(),
-
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
-
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Text('Loading...');
-                      }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          DocumentSnapshot document =
-                              snapshot.data!.docs[index];
-                          String documentId = document.id;
-                          return GetStudentName(documentId);
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            )
-          ),
+                )),
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor:
               const Color(0xFF222222), // Set the overall background color
@@ -124,8 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           selectedItemColor: Colors.grey,
           unselectedItemColor: const Color(0xFFFFFFFF),
-       onTap: (int index) {
-          if (index == 0) {
+          onTap: (int index) {
+            if (index == 0) {
               // Navigate to the Events page
               Navigator.push(
                 context,
@@ -149,7 +174,7 @@ class GetStudentName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CollectionReference members =
-    FirebaseFirestore.instance.collection('members');
+        FirebaseFirestore.instance.collection('members');
 
     return StreamBuilder<DocumentSnapshot>(
       // Fetching data from the documentId specified for the student
@@ -168,7 +193,7 @@ class GetStudentName extends StatelessWidget {
         // Data is output to the user
         if (snapshot.connectionState == ConnectionState.active) {
           Map<String, dynamic> data =
-          snapshot.data!.data() as Map<String, dynamic>;
+              snapshot.data!.data() as Map<String, dynamic>;
 
           return GestureDetector(
             onTap: () {

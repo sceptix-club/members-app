@@ -1,9 +1,14 @@
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 import 'EventAdd.dart';
 import 'main.dart';
+import 'package:intl/intl.dart';
 
 class EventsPage extends StatefulWidget {
+  const EventsPage({Key? key}) : super(key: key);
+
   @override
   _EventsPageState createState() => _EventsPageState();
 }
@@ -13,6 +18,21 @@ class _EventsPageState extends State<EventsPage> {
   final TextEditingController eventDescriptionController =
       TextEditingController();
   final TextEditingController eventLeaderController = TextEditingController();
+
+  int completedEventsCount = 5;
+  int ongoingEventsCount = 10;
+
+  void updateCompletedEventsCount(int count) {
+    setState(() {
+      completedEventsCount = count;
+    });
+  }
+
+  void updateOngoingEventsCount(int count) {
+    setState(() {
+      ongoingEventsCount = count;
+    });
+  }
 
   @override
   void dispose() {
@@ -24,28 +44,149 @@ class _EventsPageState extends State<EventsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentDate = DateTime.now();
+    final dayFormat = DateFormat('EEEE');
+    final dateFormat = DateFormat('MMM dd, yyyy');
+
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/background(temp).png'),
-                  fit: BoxFit.cover,
-                ),
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    "assets/images/podium-abstract-splines-on-white-260nw-2121765374.jpg"),
+                fit: BoxFit.fill,
               ),
+            ),
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: const SizedBox(),
+            ),
+          ),
+          const RiveAnimation.asset(
+            "assets/RiveAssets/shapes.riv",
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+              child: const SizedBox(),
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Padding(
+                padding:
+                    const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      dayFormat.format(currentDate),
+                      style: const TextStyle(
+                        fontSize: 36.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      dateFormat.format(currentDate),
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle completed events button press
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CompletedEventsPage(
+                            updateCompletedEventsCount:
+                                updateCompletedEventsCount,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent,
+                      padding: const EdgeInsets.only(
+                          left: 10.0, right: 10, top: 16, bottom: 16),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: const BorderSide(color: Colors.black),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Completed Events',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        Text(
+                          completedEventsCount.toString(),
+                          style: const TextStyle(
+                              fontSize: 24.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle ongoing events button press
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OngoingEventsPage(
+                            updateOngoingEventsCount: updateOngoingEventsCount,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent,
+                      padding: const EdgeInsets.only(
+                          left: 10.0, right: 10, top: 16, bottom: 16),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: const BorderSide(color: Colors.black),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Ongoing Events',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        Text(
+                          ongoingEventsCount.toString(),
+                          style: const TextStyle(
+                              fontSize: 24.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               Container(
                 margin: const EdgeInsets.all(16.0),
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
+                  border: Border.all(color: Colors.black),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: ElevatedButton(
@@ -58,17 +199,15 @@ class _EventsPageState extends State<EventsPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
+                    primary: const Color(0xFFF77D8E),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     elevation: 2.0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Text(
-                    'Add New Event',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
+                  child: const Text('Add New Event',
+                      style: TextStyle(fontSize: 16.0)),
                 ),
               ),
               Expanded(
@@ -120,37 +259,41 @@ class _EventsPageState extends State<EventsPage> {
                                   ),
                                 );
                               },
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                        'assets/background(temp).png'),
-                                    fit: BoxFit.cover,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    border: Border.all(
+                                        color: Colors
+                                            .black), // Add border color and width
+                                    borderRadius: BorderRadius.circular(8.0),
                                   ),
-                                ),
-                                child: Card(
-                                  child: ListTile(
-                                    leading: Container(
-                                      width: 48,
-                                      height: 48,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image:
-                                              AssetImage('assets/calendar.png'),
+                                  child: Card(
+                                    color: Colors.transparent,
+                                    child: ListTile(
+                                      leading: Container(
+                                        width: 48,
+                                        height: 48,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image:
+                                                AssetImage('assets/calendar.png'),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    title: Text(title),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(description),
-                                        const SizedBox(height: 4.0),
-                                        Text('Leader: $leader'),
-                                      ],
+                                      title: Text(title),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(description),
+                                          const SizedBox(height: 4.0),
+                                          Text('Leader: $leader'),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -164,13 +307,13 @@ class _EventsPageState extends State<EventsPage> {
                   ),
                 ),
               ),
+              const SizedBox(height: 16.0),
             ],
           ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor:
-            const Color(0xFF222222), // Set the overall background color
+        backgroundColor: const Color(0xFF222222),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.account_tree_outlined),
@@ -185,7 +328,6 @@ class _EventsPageState extends State<EventsPage> {
         unselectedItemColor: const Color(0xFFFFFFFF),
         onTap: (int index) {
           if (index == 1) {
-            // Navigate to the Home page
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -199,75 +341,184 @@ class _EventsPageState extends State<EventsPage> {
   }
 }
 
-class EventDetails extends StatefulWidget {
+class EventDetails extends StatelessWidget {
   final String eventName;
   final String eventDescription;
   final String eventLeader;
 
   const EventDetails({
+    Key? key,
     required this.eventName,
     required this.eventDescription,
     required this.eventLeader,
-  });
-
-  @override
-  _EventDetailsState createState() => _EventDetailsState();
-}
-
-class _EventDetailsState extends State<EventDetails> {
-  double progress = 0.5; // Set the initial progress value (between 0 and 1)
-
-  void increaseProgress() {
-    setState(() {
-      if (progress < 1.0) {
-        progress += 0.1; // Increment the progress by 0.1
-      }
-    });
-  }
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background(temp).png'),
-            fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/background(temp).png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(
+                          context); // Navigate back to the previous page
+                    },
+                    color:
+                        Colors.grey, // Set the color of the back arrow to grey
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  eventName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  'Event Description: $eventDescription',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(height: 16.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Event Leader:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        CircleAvatar(
+                          radius: 24.0,
+                          backgroundImage: AssetImage('assets/lead.jpg'),
+                        ),
+                        SizedBox(width: 8.0),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                Slider(
+                  value: 0.5,
+                  onChanged: (value) {
+                    // Handle slider value change
+                  },
+                  min: 0.0,
+                  max: 1.0,
+                  activeColor: Colors.green,
+                  inactiveColor: Colors.grey,
+                ),
+              ],
+            ),
           ),
-        ),
-        padding: const EdgeInsets.all(16.0),
+        ],
+      ),
+    );
+  }
+}
+
+class CompletedEventsPage extends StatefulWidget {
+  final Function(int) updateCompletedEventsCount;
+
+  const CompletedEventsPage(
+      {Key? key, required this.updateCompletedEventsCount})
+      : super(key: key);
+
+  @override
+  _CompletedEventsPageState createState() => _CompletedEventsPageState();
+}
+
+class _CompletedEventsPageState extends State<CompletedEventsPage> {
+  int completedEventsCount = 5;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Completed Events'),
+      ),
+      body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Event Leader: ${widget.eventLeader}',
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0,
-                  color: Colors.white),
+              'Completed Events Count: $completedEventsCount',
+              style: const TextStyle(fontSize: 24.0),
             ),
-            const SizedBox(height: 8.0),
-            Text(
-              'Event Name: ${widget.eventName}',
-              style: const TextStyle(color: Colors.white),
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              'Event Description: ${widget.eventDescription}',
-              style: const TextStyle(color: Colors.white),
-            ),
-            const SizedBox(height: 16.0),
-            Slider(
-              value: progress,
-              onChanged: (value) {
+            ElevatedButton(
+              onPressed: () {
                 setState(() {
-                  progress = value;
+                  completedEventsCount++; // Increment the completed events count
+                  widget.updateCompletedEventsCount(completedEventsCount);
                 });
               },
-              min: 0.0,
-              max: 1.0,
-              activeColor: Colors.green,
-              inactiveColor: Colors.grey,
+              child: const Text('Increment Count'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class OngoingEventsPage extends StatefulWidget {
+  final Function(int) updateOngoingEventsCount;
+
+  const OngoingEventsPage({Key? key, required this.updateOngoingEventsCount})
+      : super(key: key);
+
+  @override
+  _OngoingEventsPageState createState() => _OngoingEventsPageState();
+}
+
+class _OngoingEventsPageState extends State<OngoingEventsPage> {
+  int ongoingEventsCount = 10;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ongoing Events'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Ongoing Events Count: $ongoingEventsCount',
+              style: const TextStyle(fontSize: 24.0),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  ongoingEventsCount++; // Increment the ongoing events count
+                  widget.updateOngoingEventsCount(ongoingEventsCount);
+                });
+              },
+              child: const Text('Increment Count'),
             ),
           ],
         ),
