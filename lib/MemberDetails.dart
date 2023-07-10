@@ -1,7 +1,10 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+
+import 'Events.dart';
 
 class MemberDetails extends StatelessWidget {
   final Map<String, dynamic> memberData;
@@ -47,22 +50,22 @@ class MemberDetails extends StatelessWidget {
                   children: [
                     Text(
                       'Name: ${memberData['fullName']}',
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       'Github: ${memberData['githubUsername']}',
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       'Email: ${memberData['email']}',
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     const SizedBox(height: 30),
                     Text(
                       'Designation: ${memberData['designation']}',
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     SizedBox(
                       width: 200,
@@ -72,12 +75,12 @@ class MemberDetails extends StatelessWidget {
                     const SizedBox(height: 30),
                     Text(
                       'Score: ${memberData['score']}',
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     const SizedBox(height: 30),
                     const Text(
                       'Project Leader in:', 
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
                     const SizedBox(height: 10),
                     StreamBuilder<QuerySnapshot>(
@@ -120,7 +123,7 @@ class MemberDetails extends StatelessWidget {
                                 child: Text(
                                   'Event: ${eventData['title']}',
                                   style: const TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.black,
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),
@@ -132,7 +135,7 @@ class MemberDetails extends StatelessWidget {
                         return const Text(
                           'No events found.',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             decoration: TextDecoration.underline,
                           ),
                         );
@@ -141,7 +144,7 @@ class MemberDetails extends StatelessWidget {
                     const SizedBox(height: 30),
                     const Text(
                       'Participating in:',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
                     const SizedBox(height: 10),
                     StreamBuilder<QuerySnapshot>(
@@ -186,14 +189,14 @@ class MemberDetails extends StatelessWidget {
                                   child: Text(
                                     'Event: ${eventData['title']}',
                                     style: const TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                       decoration: TextDecoration.underline,
                                     ),
                                   ),
                                 );
                               }
 
-                              return SizedBox(); // Return an empty container if the member is a team leader for this event
+                              return const SizedBox(); // Return an empty container if the member is a team leader for this event
                             }).toList(),
                           );
                         }
@@ -201,7 +204,7 @@ class MemberDetails extends StatelessWidget {
                         return const Text(
                           'No events found.',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             decoration: TextDecoration.underline,
                           ),
                         );
