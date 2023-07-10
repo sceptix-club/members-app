@@ -137,8 +137,8 @@ class _EventsPageState extends State<EventsPage> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: AssetImage(
-                                              'assets/calendar.png'),
+                                          image:
+                                              AssetImage('assets/calendar.png'),
                                         ),
                                       ),
                                     ),
@@ -170,7 +170,7 @@ class _EventsPageState extends State<EventsPage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor:
-        const Color(0xFF222222), // Set the overall background color
+            const Color(0xFF222222), // Set the overall background color
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.account_tree_outlined),

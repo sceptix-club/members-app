@@ -51,6 +51,10 @@ class EventData extends StatelessWidget {
                         'Event Name: ${eventData['eventName']}',
                         style: const TextStyle(color: Colors.white),
                       ),
+                      Text(
+                        'Date: ${eventData['date']}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
                       const SizedBox(height: 10),
                       Text(
                         'Event Description: ${eventData['eventDescription']}',
