@@ -2,7 +2,9 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import 'package:rive/rive.dart';
+import 'EventAdd.dart';
+import 'main.dart';
 import 'main.dart';
 
 class EventsPage extends StatefulWidget {
@@ -38,6 +40,15 @@ class _EventsPageState extends State<EventsPage> {
               child: const SizedBox(),
             ),
           ),
+          const RiveAnimation.asset(
+            "assets/RiveAssets/shapes.riv",
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+              child: const SizedBox(),
+            ),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -66,6 +77,34 @@ class _EventsPageState extends State<EventsPage> {
                 ),
               ),
               const SizedBox(height: 16.0),
+              Container(
+                margin: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EventAdd(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: const Color(0xFFF77D8E),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text('Add New Event',
+                      style: TextStyle(fontSize: 16.0)),
+                ),
+              ),
               Expanded(
                 child: Container(
                   decoration: const BoxDecoration(
