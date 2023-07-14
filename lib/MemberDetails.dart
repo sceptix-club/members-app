@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
@@ -49,15 +50,6 @@ class MemberDetails extends StatelessWidget {
                       child: const SizedBox(),
                     ),
                   ),
-                  const RiveAnimation.asset(
-                    "assets/RiveAssets/shapes.riv",
-                  ),
-                  Positioned.fill(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                      child: const SizedBox(),
-                    ),
-                  ),
                   Container(
                     padding: const EdgeInsets.only(top: 40.0),
                     child: Center(
@@ -99,14 +91,14 @@ class MemberDetails extends StatelessWidget {
                             const Text(
                               'Project Leader in:',
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 18),
+                              TextStyle(color: Colors.black, fontSize: 18),
                             ),
                             const SizedBox(height: 10),
                             StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection('events')
                                   .where('teamLeaders',
-                                      arrayContains: documentId)
+                                  arrayContains: documentId)
                                   .snapshots(),
                               builder: (BuildContext context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -128,13 +120,13 @@ class MemberDetails extends StatelessWidget {
 
                                   return Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: eventIds.map((eventId) {
                                       final doc = snapshot.data!.docs
                                           .firstWhere(
                                               (doc) => doc.id == eventId);
                                       final eventData =
-                                          doc.data() as Map<String, dynamic>;
+                                      doc.data() as Map<String, dynamic>;
 
                                       return GestureDetector(
                                         onTap: () {
@@ -170,14 +162,14 @@ class MemberDetails extends StatelessWidget {
                             const Text(
                               'Participating in:',
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 18),
+                              TextStyle(color: Colors.black, fontSize: 18),
                             ),
                             const SizedBox(height: 10),
                             StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection('events')
                                   .where('teamMembers',
-                                      arrayContains: documentId)
+                                  arrayContains: documentId)
                                   .snapshots(),
                               builder: (BuildContext context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -199,13 +191,13 @@ class MemberDetails extends StatelessWidget {
 
                                   return Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: eventIds.map((eventId) {
                                       final doc = snapshot.data!.docs
                                           .firstWhere(
                                               (doc) => doc.id == eventId);
                                       final eventData =
-                                          doc.data() as Map<String, dynamic>;
+                                      doc.data() as Map<String, dynamic>;
 
                                       return GestureDetector(
                                         onTap: () {

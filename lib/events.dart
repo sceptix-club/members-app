@@ -53,7 +53,7 @@ class _EventsPageState extends State<EventsPage> {
             children: [
               Padding(
                 padding:
-                    const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
+                const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -76,13 +76,65 @@ class _EventsPageState extends State<EventsPage> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              Container(
-                margin: const EdgeInsets.all(16.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(8.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        // No functionality, since we removed the onTap logic
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Column(
+                          children: const [
+                            Text(
+                              'Completed Events',
+                              style: TextStyle(fontSize: 16.0),
+                            ),
+                            Text(
+                              '0',
+                              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16.0),
+                    GestureDetector(
+                      onTap: () {
+                        // No functionality, since we removed the onTap logic
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Column(
+                          children: const [
+                            Text(
+                              'Ongoing Events',
+                              style: TextStyle(fontSize: 16.0),
+                            ),
+                            Text(
+                              '0',
+                              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -100,8 +152,10 @@ class _EventsPageState extends State<EventsPage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Text('Add New Event',
-                      style: TextStyle(fontSize: 16.0)),
+                  child: const Text(
+                    'Add New Event',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
                 ),
               ),
               Expanded(
@@ -112,17 +166,16 @@ class _EventsPageState extends State<EventsPage> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('events')
+                        .orderBy('date') // Sort events by date
                         .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
                       if (snapshot.hasData) {
-                        final List<QueryDocumentSnapshot> documents =
-                            snapshot.data!.docs;
+                        final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
                         return ListView.builder(
                           itemCount: documents.length,
                           itemBuilder: (context, index) {
@@ -150,8 +203,7 @@ class _EventsPageState extends State<EventsPage> {
                                 );
                               },
                               child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
+                                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.transparent,
@@ -176,7 +228,7 @@ class _EventsPageState extends State<EventsPage> {
                                       title: Text(title),
                                       subtitle: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(description),
                                           const SizedBox(height: 4.0),
@@ -194,39 +246,6 @@ class _EventsPageState extends State<EventsPage> {
                       return const SizedBox.shrink();
                     },
                   ),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: const [
-                    Text(
-                      'Completed Events',
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    Text(
-                      '0',
-                      style: TextStyle(
-                          fontSize: 24.0, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: const [
-                    Text(
-                      'Ongoing Events',
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    Text(
-                      '0',
-                      style: TextStyle(
-                          fontSize: 24.0, fontWeight: FontWeight.bold),
-                    ),
-                  ],
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -249,14 +268,7 @@ class _EventsPageState extends State<EventsPage> {
         selectedItemColor: Colors.grey,
         unselectedItemColor: const Color(0xFFFFFFFF),
         onTap: (int index) {
-          if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MyHomePage(),
-              ),
-            );
-          }
+          // Handle bottom navigation item tap
         },
       ),
     );
@@ -313,9 +325,11 @@ class EventDetails extends StatelessWidget {
                         child: IconButton(
                           icon: const Icon(Icons.arrow_back),
                           onPressed: () {
-                            Navigator.pop(context); // Navigate back to the previous page
+                            Navigator.pop(
+                                context); // Navigate back to the previous page
                           },
-                          color: Colors.grey, // Set the color of the back arrow to grey
+                          color: Colors
+                              .grey, // Set the color of the back arrow to grey
                         ),
                       ),
                       const SizedBox(height: 16.0),
