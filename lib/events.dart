@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:rive/rive.dart';
 import 'EventAdd.dart';
 import 'main.dart';
-import 'main.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key}) : super(key: key);
@@ -54,7 +53,7 @@ class _EventsPageState extends State<EventsPage> {
             children: [
               Padding(
                 padding:
-                const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
+                    const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -94,7 +93,7 @@ class _EventsPageState extends State<EventsPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: const Color(0xFFF77D8E),
+                    backgroundColor: const Color(0xFFF77D8E),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     elevation: 2.0,
                     shape: RoundedRectangleBorder(
@@ -127,15 +126,16 @@ class _EventsPageState extends State<EventsPage> {
                         return ListView.builder(
                           itemCount: documents.length,
                           itemBuilder: (context, index) {
-                            final Map<String, dynamic>? data =
-                            documents[index].data() as Map<String, dynamic>?;
+                            final Map<String, dynamic>? data = documents[index]
+                                .data() as Map<String, dynamic>?;
 
                             if (data == null) {
                               return const SizedBox.shrink();
                             }
 
                             final String title = data['title'] ?? '';
-                            final String description = data['description'] ?? '';
+                            final String description =
+                                data['description'] ?? '';
                             final String leader = data['leader'] ?? '';
 
                             return GestureDetector(
@@ -144,9 +144,7 @@ class _EventsPageState extends State<EventsPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EventDetails(
-                                      eventName: title,
-                                      eventDescription: description,
-                                      eventLeader: leader,
+                                      eventId: documents[index].id,
                                     ),
                                   ),
                                 );
@@ -170,15 +168,15 @@ class _EventsPageState extends State<EventsPage> {
                                           shape: BoxShape.circle,
                                           image: DecorationImage(
                                             fit: BoxFit.cover,
-                                            image:
-                                            AssetImage('assets/calendar.png'),
+                                            image: AssetImage(
+                                                'assets/calendar.png'),
                                           ),
                                         ),
                                       ),
                                       title: Text(title),
                                       subtitle: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(description),
                                           const SizedBox(height: 4.0),
@@ -202,12 +200,12 @@ class _EventsPageState extends State<EventsPage> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  children: [
-                    const Text(
+                  children: const [
+                    Text(
                       'Completed Events',
                       style: TextStyle(fontSize: 16.0),
                     ),
-                    const Text(
+                    Text(
                       '0',
                       style: TextStyle(
                           fontSize: 24.0, fontWeight: FontWeight.bold),
@@ -218,12 +216,12 @@ class _EventsPageState extends State<EventsPage> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  children: [
-                    const Text(
+                  children: const [
+                    Text(
                       'Ongoing Events',
                       style: TextStyle(fontSize: 16.0),
                     ),
-                    const Text(
+                    Text(
                       '0',
                       style: TextStyle(
                           fontSize: 24.0, fontWeight: FontWeight.bold),
@@ -266,97 +264,125 @@ class _EventsPageState extends State<EventsPage> {
 }
 
 class EventDetails extends StatelessWidget {
-  final String eventName;
-  final String eventDescription;
-  final String eventLeader;
+  final String eventId;
 
   const EventDetails({
     Key? key,
-    required this.eventName,
-    required this.eventDescription,
-    required this.eventLeader,
+    required this.eventId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/background(temp).png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('events')
+            .doc(eventId)
+            .snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text('Loading...');
+          }
+
+          if (snapshot.hasData && snapshot.data!.exists) {
+            final eventData = snapshot.data!.data() as Map<String, dynamic>;
+            final eventName = eventData['title'] as String?; // Ensure eventName is of type String
+            final eventDescription = eventData['description'] as String?; // Ensure eventDescription is of type String
+            final eventLeader = eventData['leader'] as String?; // Ensure eventLeader is of type String
+
+            return Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context); // Navigate back to the previous page
-                    },
-                    color: Colors.grey, // Set the color of the back arrow to grey
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  eventName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Event Description: $eventDescription',
-                  style: const TextStyle(color: Colors.white),
-                ),
-                const SizedBox(height: 16.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Event Leader:',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                        color: Colors.white,
-                      ),
+                Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/background(temp).png'),
+                      fit: BoxFit.cover,
                     ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        CircleAvatar(
-                          radius: 24.0,
-                          backgroundImage: AssetImage('assets/lead.jpg'),
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.pop(context); // Navigate back to the previous page
+                          },
+                          color: Colors.grey, // Set the color of the back arrow to grey
                         ),
-                        SizedBox(width: 8.0),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16.0),
-                Slider(
-                  value: 0.5,
-                  onChanged: (value) {
-                    // Handle slider value change
-                  },
-                  min: 0.0,
-                  max: 1.0,
-                  activeColor: Colors.green,
-                  inactiveColor: Colors.grey,
+                      ),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        eventName ?? '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        'Event Description: ${eventDescription ?? ''}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Event Leader:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const CircleAvatar(
+                                radius: 24.0,
+                                backgroundImage: AssetImage('assets/lead.jpg'),
+                              ),
+                              const SizedBox(width: 8.0),
+                              Text(
+                                eventLeader ?? '',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16.0),
+                      Slider(
+                        value: 0.5,
+                        onChanged: (value) {
+                          // Handle slider value change
+                        },
+                        min: 0.0,
+                        max: 1.0,
+                        activeColor: Colors.green,
+                        inactiveColor: Colors.grey,
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            ),
-          ),
-        ],
+            );
+          }
+
+          return const Text('Event not found.');
+        },
       ),
     );
   }
