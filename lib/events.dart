@@ -4,25 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rive/rive.dart';
 import 'EventAdd.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Events App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const EventsPage(),
-    );
-  }
-}
+import 'main.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key}) : super(key: key);
@@ -70,7 +52,8 @@ class _EventsPageState extends State<EventsPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
+                padding:
+                    const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -162,7 +145,7 @@ class _EventsPageState extends State<EventsPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: const Color(0xFFF77D8E),
+                    backgroundColor: const Color(0xFFF77D8E),
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     elevation: 2.0,
                     shape: RoundedRectangleBorder(
@@ -196,14 +179,16 @@ class _EventsPageState extends State<EventsPage> {
                         return ListView.builder(
                           itemCount: documents.length,
                           itemBuilder: (context, index) {
-                            final Map<String, dynamic>? data = documents[index].data() as Map<String, dynamic>?;
+                            final Map<String, dynamic>? data = documents[index]
+                                .data() as Map<String, dynamic>?;
 
                             if (data == null) {
                               return const SizedBox.shrink();
                             }
 
                             final String title = data['title'] ?? '';
-                            final String description = data['description'] ?? '';
+                            final String description =
+                                data['description'] ?? '';
                             final String leader = data['leader'] ?? '';
 
                             return GestureDetector(
@@ -238,13 +223,15 @@ class _EventsPageState extends State<EventsPage> {
                                           shape: BoxShape.circle,
                                           image: DecorationImage(
                                             fit: BoxFit.cover,
-                                            image: AssetImage('assets/calendar.png'),
+                                            image: AssetImage(
+                                                'assets/calendar.png'),
                                           ),
                                         ),
                                       ),
                                       title: Text(title),
                                       subtitle: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(description),
                                           const SizedBox(height: 4.0),
@@ -262,6 +249,39 @@ class _EventsPageState extends State<EventsPage> {
                       return const SizedBox.shrink();
                     },
                   ),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: const [
+                    Text(
+                      'Completed Events',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    Text(
+                      '0',
+                      style: TextStyle(
+                          fontSize: 24.0, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: const [
+                    Text(
+                      'Ongoing Events',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    Text(
+                      '0',
+                      style: TextStyle(
+                          fontSize: 24.0, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -293,33 +313,37 @@ class _EventsPageState extends State<EventsPage> {
 
 class EventDetails extends StatelessWidget {
   final String eventId;
-  final String eventName;
-  final String eventDescription;
-  final String eventLeader;
 
   const EventDetails({
     Key? key,
     required this.eventId,
-    required this.eventName,
-    required this.eventDescription,
-    required this.eventLeader,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/background(temp).png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('events')
+            .doc(eventId)
+            .snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text('Loading...');
+          }
+
+          if (snapshot.hasData && snapshot.data!.exists) {
+            final eventData = snapshot.data!.data() as Map<String, dynamic>;
+            final eventName = eventData['title'] as String?; // Ensure eventName is of type String
+            final eventDescription = eventData['description'] as String?; // Ensure eventDescription is of type String
+            final eventLeader = eventData['leader'] as String?; // Ensure eventLeader is of type String
+
+            return Stack(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 16.0),
@@ -450,9 +474,11 @@ class EventDetails extends StatelessWidget {
                   },
                 ),
               ],
-            ),
-          ),
-        ],
+            );
+          }
+
+          return const Text('Event not found.');
+        },
       ),
     );
   }
