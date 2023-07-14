@@ -14,7 +14,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   runApp(MyApp());
 }
 
@@ -70,73 +69,70 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Container(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      DropdownButtonFormField<String>(
-                        value: sortingField,
-                        decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors
-                              .white, // You can further customize the appearance using other InputDecoration properties
-                        ),
-                        items: const [
-                          DropdownMenuItem<String>(
-                            value: 'rolePriority',
-                            child: Text('Sort by Role'),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: 'score',
-                            child: Text('Sort by Score'),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            // Update the sorting fie ld
-                            setState(() {
-                              sortingField = value;
-                              // Update the sorting order
-                              sortDescending = value == 'rolePriority';
-                            });
-                          }
-                        },
+              child: Column(
+                children: [
+                  DropdownButtonFormField<String>(
+                    value: sortingField,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    items: const [
+                      DropdownMenuItem<String>(
+                        value: 'rolePriority',
+                        child: Text('Sort by Role'),
                       ),
-                      StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('members')
-                            .orderBy(sortingField, descending: sortDescending)
-                            .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
-
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Text('Loading...');
-                          }
-
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              DocumentSnapshot document =
-                                  snapshot.data!.docs[index];
-                              String documentId = document.id;
-                              return GetStudentName(documentId);
-                            },
-                          );
-                        },
+                      DropdownMenuItem<String>(
+                        value: 'score',
+                        child: Text('Sort by Score'),
                       ),
                     ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        // Update the sorting fie ld
+                        setState(() {
+                          sortingField = value;
+                          // Update the sorting order
+                          sortDescending = value == 'rolePriority';
+                        });
+                      }
+                    },
                   ),
-                )),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('members')
+                        .orderBy(sortingField, descending: sortDescending)
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Text('Loading...');
+                      }
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          DocumentSnapshot document =
+                              snapshot.data!.docs[index];
+                          String documentId = document.id;
+                          return GetStudentName(documentId);
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            )),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor:
-              const Color(0xFF222222), // Set the overall background color
+          backgroundColor: const Color(0xFF222222),
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.account_tree_outlined),
@@ -177,32 +173,23 @@ class GetStudentName extends StatelessWidget {
         FirebaseFirestore.instance.collection('members');
 
     return StreamBuilder<DocumentSnapshot>(
-      // Fetching data from the documentId specified for the student
       stream: members.doc(documentId).snapshots(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        // Error Handling conditions
         if (snapshot.hasError) {
           return const Text("Something went wrong");
         }
-
-        if (!snapshot.hasData || !snapshot.data!.exists) {
-          return const Text("Document does not exist");
-        }
-
-        // Data is output to the user
         if (snapshot.connectionState == ConnectionState.active) {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
 
           return GestureDetector(
             onTap: () {
-              // Navigate to the desired page when the box is clicked
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => MemberDetails(
-                    {...data, 'id': documentId}, // Include the document ID in the member's data
+                    documentId,
                   ),
                 ),
               );
