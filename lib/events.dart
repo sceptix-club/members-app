@@ -53,7 +53,7 @@ class _EventsPageState extends State<EventsPage> {
             children: [
               Padding(
                 padding:
-                    const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
+                const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -198,9 +198,6 @@ class _EventsPageState extends State<EventsPage> {
                                   MaterialPageRoute(
                                     builder: (context) => EventDetails(
                                       eventId: documents[index].id,
-                                      eventName: title,
-                                      eventDescription: description,
-                                      eventLeader: leader,
                                     ),
                                   ),
                                 );
@@ -231,7 +228,7 @@ class _EventsPageState extends State<EventsPage> {
                                       title: Text(title),
                                       subtitle: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(description),
                                           const SizedBox(height: 4.0),
@@ -249,39 +246,6 @@ class _EventsPageState extends State<EventsPage> {
                       return const SizedBox.shrink();
                     },
                   ),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: const [
-                    Text(
-                      'Completed Events',
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    Text(
-                      '0',
-                      style: TextStyle(
-                          fontSize: 24.0, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: const [
-                    Text(
-                      'Ongoing Events',
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    Text(
-                      '0',
-                      style: TextStyle(
-                          fontSize: 24.0, fontWeight: FontWeight.bold),
-                    ),
-                  ],
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -345,133 +309,87 @@ class EventDetails extends StatelessWidget {
 
             return Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context); // Navigate back to the previous page
-                    },
-                    color: Colors.grey, // Set the color of the back arrow to grey
+                Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/background(temp).png'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                StreamBuilder<DocumentSnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('events')
-                      .doc(eventId)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (snapshot.hasData) {
-                      var eventData = snapshot.data!.data() as Map<String, dynamic>?;
-
-                      if (eventData != null) {
-                        String eventName = eventData['title'] ?? '';
-                        String eventDescription = eventData['description'] ?? '';
-                        String eventLeader = eventData['leader'] ?? '';
-                        List<String> memberNames = List<String>.from(eventData['members'] ?? []);
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              eventName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                                color: Colors.white,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.pop(
+                                context); // Navigate back to the previous page
+                          },
+                          color: Colors
+                              .grey, // Set the color of the back arrow to grey
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        eventName ?? '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        'Event Description: ${eventDescription ?? ''}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Event Leader:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const CircleAvatar(
+                                radius: 24.0,
+                                backgroundImage: AssetImage('assets/lead.jpg'),
                               ),
-                            ),
-                            const SizedBox(height: 16.0),
-                            Text(
-                              'Event Description: $eventDescription',
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            const SizedBox(height: 16.0),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Event Leader:',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
+                              const SizedBox(width: 8.0),
+                              Text(
+                                eventLeader ?? '',
+                                style: const TextStyle(
+                                  color: Colors.white,
                                 ),
-                                const SizedBox(height: 8.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const CircleAvatar(
-                                      radius: 24.0,
-                                      backgroundImage: AssetImage('assets/lead.jpg'),
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    Expanded(
-                                      child: Text(
-                                        eventLeader,
-                                        style: const TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16.0),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Members:',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 8.0),
-                                for (String memberName in memberNames)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const CircleAvatar(
-                                        radius: 24.0,
-                                        backgroundImage: AssetImage('assets/member.jpg'),
-                                      ),
-                                      const SizedBox(width: 8.0),
-                                      Expanded(
-                                        child: Text(
-                                          memberName,
-                                          style: const TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(height: 16.0),
-                            Slider(
-                              value: 0.5,
-                              onChanged: (value) {
-                                // Handle slider value change
-                              },
-                              min: 0.0,
-                              max: 1.0,
-                              activeColor: Colors.green,
-                              inactiveColor: Colors.grey,
-                            ),
-                          ],
-                        );
-                      }
-                    }
-                    return const SizedBox.shrink();
-                  },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16.0),
+                      Slider(
+                        value: 0.5,
+                        onChanged: (value) {
+                          // Handle slider value change
+                        },
+                        min: 0.0,
+                        max: 1.0,
+                        activeColor: Colors.green,
+                        inactiveColor: Colors.grey,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );
