@@ -78,7 +78,7 @@ class MemberDetails extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     const Text(
-                      'Project Leader in:', 
+                      'Project Leader in:',
                       style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
                     const SizedBox(height: 10),
@@ -112,6 +112,7 @@ class MemberDetails extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => EventDetails(
+                                        eventId: eventId, // Add the eventId parameter here
                                         eventName: eventData['title'],
                                         eventDescription: eventData['description'],
                                         eventLeader: memberData['fullName'],
@@ -119,6 +120,7 @@ class MemberDetails extends StatelessWidget {
                                     ),
                                   );
                                 },
+
                                 child: Text(
                                   'Event: ${eventData['title']}',
                                   style: const TextStyle(
@@ -178,13 +180,15 @@ class MemberDetails extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => EventDetails(
+                                          eventId: eventId, // Add the eventId parameter here
                                           eventName: eventData['title'],
                                           eventDescription: eventData['description'],
-                                          eventLeader: teamLeaders.isNotEmpty ? teamLeaders[0].toString() : '',
+                                          eventLeader: memberData['fullName'],
                                         ),
                                       ),
                                     );
                                   },
+
                                   child: Text(
                                     'Event: ${eventData['title']}',
                                     style: const TextStyle(
