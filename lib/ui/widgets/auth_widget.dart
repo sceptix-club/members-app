@@ -28,7 +28,7 @@ class _AuthWidgetState extends State<AuthWidget> {
             MaterialPageRoute(builder: (cxt) => const OnbodingScreen()));
       } else {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (cxt) => const OnbodingScreen()));
+            context, MaterialPageRoute(builder: (cxt) => const EventsPage()));
       }
       //EventsPage
     });

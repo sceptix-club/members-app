@@ -11,6 +11,7 @@ import 'package:sceptixapp/ui/screens/register.dart';
 import 'package:sceptixapp/ui/screens/resetpass.dart';
 import '../../globals/common.dart';
 import '../widgets/login_card.dart';
+import 'git_auth.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -266,12 +267,19 @@ class _LoginState extends State<Login> {
                       children: [
                         LoginCard(
                           onTap: _loginWithEmailPassword,
-                          imgPath: 'assets/images/email.png',
-                        ),
-                        LoginCard(
-                          onTap: _googleSignin,
                           imgPath: 'assets/images/google.png',
                         ),
+                        // LoginCard(
+                        //   onTap: () {
+                        //       Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (cxt) => GitAuthPage()),
+                        //       );
+                        //     },
+                        //   //_googleSignin
+                        //   imgPath: 'assets/images/github-logo.png',
+                        // ),
                         // LoginCard(
                         //   onTap: () {
                         //     Navigator.push(

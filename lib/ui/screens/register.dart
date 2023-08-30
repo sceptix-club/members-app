@@ -244,12 +244,12 @@ class _RegisterState extends State<Register> {
                       children: [
                         LoginCard(
                           onTap: _signupWithEmailPassword,
-                          imgPath: 'assets/images/email.png',
-                        ),
-                        LoginCard(
-                          onTap: _googleSignin,
                           imgPath: 'assets/images/google.png',
                         ),
+                        // LoginCard(
+                        //   onTap: _googleSignin,
+                        //   imgPath: 'assets/images/google.png',
+                        // ),
                         // LoginCard(
                         //   onTap: () {
                         //     Navigator.push(
