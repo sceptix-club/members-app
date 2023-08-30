@@ -74,7 +74,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: 'The ',
+                              text: ' The ',
                               style: TextStyle(
                                 fontSize: 60,
                                 fontWeight: FontWeight.w700,
@@ -83,50 +83,15 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
                                 height: 1.2,
                               ),
                               children: [
-                                TextSpan(
-                                  text: 's',
-                                  style: TextStyle(
-                                    color: Colors.pinkAccent,
+                                WidgetSpan(
+                                  child: Image.asset(
+                                    'assets/images/sceptix-8.png', // Replace with the path to your image asset
+                                    height: 70, // Set the desired height for your image
+                                    fit: BoxFit.contain, // Adjust the fit as needed
                                   ),
                                 ),
                                 TextSpan(
-                                  text: 'c',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: 'e',
-                                  style: TextStyle(
-                                    color: Colors.pinkAccent,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: 'p',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: 't',
-                                  style: TextStyle(
-                                    color: Colors.pinkAccent,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: 'i',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: 'x',
-                                  style: TextStyle(
-                                    color: Colors.pinkAccent,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: ' club',
+                                  text: "\n\tclub",
                                   style: TextStyle(
                                     color: Colors.black,
                                   ),
