@@ -250,16 +250,16 @@ class _RegisterState extends State<Register> {
                           onTap: _googleSignin,
                           imgPath: 'assets/images/google.png',
                         ),
-                        LoginCard(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (cxt) => const PhoneAuth()),
-                            );
-                          },
-                          imgPath: 'assets/images/phone.png',
-                        ),
+                        // LoginCard(
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (cxt) => const PhoneAuth()),
+                        //     );
+                        //   },
+                        //   imgPath: 'assets/images/phone.png',
+                        // ),
                       ],
                     ),
                   ),
