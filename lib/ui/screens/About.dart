@@ -85,7 +85,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
                               children: [
                                 WidgetSpan(
                                   child: Image.asset(
-                                    'assets/images/sceptix-8.png', // Replace with the path to your image asset
+                                    "assets/images/sceptix-8-30-2023.png", // Replace with the path to your image asset
                                     height: 70, // Set the desired height for your image
                                     fit: BoxFit.contain, // Adjust the fit as needed
                                   ),
