@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:sceptixapp/ui/screens/login.dart';
 import '../Components/animated_btn.dart';
-import 'package:sceptixapp/main.dart';
-//import 'login.dart';
 
 class OnbodingScreen extends StatefulWidget {
   const OnbodingScreen({super.key});
@@ -33,7 +31,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
                     "assets/images/podium-abstract-splines-on-white-260nw-2121765374.jpg"),
@@ -75,7 +73,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
                           RichText(
                             text: TextSpan(
                               text: ' The ',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 60,
                                 fontWeight: FontWeight.w700,
                                 fontFamily: "Poppins",
@@ -90,7 +88,7 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
                                     fit: BoxFit.contain, // Adjust the fit as needed
                                   ),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: "\n\tclub",
                                   style: TextStyle(
                                     color: Colors.black,
@@ -99,8 +97,8 @@ class _OnbodingScreenState extends State<OnbodingScreen> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 16),
-                          Text(
+                          const SizedBox(height: 16),
+                          const Text(
                             "Welcome to The sceptix club, where freedom and innovation converge. We are a open source software club. Together, we have witnessed the transformative power of collaboration and the limitless possibilities it brings. Join us at The sceptix club and let's celebrate the journey of freedom, creativity, and boundless minds.",
                             textAlign: TextAlign.justify,
                           ),

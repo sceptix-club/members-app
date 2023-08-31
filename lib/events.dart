@@ -3,17 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rive/rive.dart';
+import 'package:sceptixapp/MemberDetails.dart';
 import 'EventAdd.dart';
 import 'main.dart';
 
 class EventsPage extends StatefulWidget {
-  const EventsPage({Key? key}) : super(key: key);
-
   @override
   _EventsPageState createState() => _EventsPageState();
 }
 
 class _EventsPageState extends State<EventsPage> {
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     final currentDate = DateTime.now();
@@ -21,6 +22,18 @@ class _EventsPageState extends State<EventsPage> {
     final dateFormat = DateFormat('MMM dd, yyyy');
 
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0, // No elevation
+        backgroundColor: Colors.transparent, // Transparent background
+        title: Text(
+          'Events',
+          style: TextStyle(
+              color: Colors.black,
+          fontSize: 30,
+          fontWeight: FontWeight.bold), // Set color for the text
+        ),
+        centerTitle: true,
+      ),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -39,9 +52,7 @@ class _EventsPageState extends State<EventsPage> {
               child: const SizedBox(),
             ),
           ),
-          const RiveAnimation.asset(
-            "assets/RiveAssets/shapes.riv",
-          ),
+          RiveAnimation.asset("assets/RiveAssets/shapes.riv"),
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
@@ -53,24 +64,21 @@ class _EventsPageState extends State<EventsPage> {
             children: [
               Padding(
                 padding:
-                const EdgeInsets.only(top: 42.0, left: 20.0, right: 20.0),
+                    const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       dayFormat.format(currentDate),
                       style: const TextStyle(
-                        fontSize: 36.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          fontSize: 36.0,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
                     ),
                     Text(
                       dateFormat.format(currentDate),
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.black,
-                      ),
+                      style:
+                          const TextStyle(fontSize: 16.0, color: Colors.black),
                     ),
                   ],
                 ),
@@ -81,50 +89,44 @@ class _EventsPageState extends State<EventsPage> {
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () {
-                        // No functionality, since we removed the onTap logic
-                      },
+                      onTap: () {},
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: Column(
                           children: const [
-                            Text(
-                              'Completed Events',
-                              style: TextStyle(fontSize: 16.0),
-                            ),
-                            Text(
-                              '0',
-                              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                            ),
+                            Text('Completed Events',
+                                style: TextStyle(fontSize: 16.0)),
+                            Text('0',
+                                style: TextStyle(
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),
                     ),
                     const SizedBox(width: 16.0),
                     GestureDetector(
-                      onTap: () {
-                        // No functionality, since we removed the onTap logic
-                      },
+                      onTap: () {},
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: Column(
                           children: const [
-                            Text(
-                              'Ongoing Events',
-                              style: TextStyle(fontSize: 16.0),
-                            ),
-                            Text(
-                              '0',
-                              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                            ),
+                            Text('Ongoing Events',
+                                style: TextStyle(fontSize: 16.0)),
+                            Text('0',
+                                style: TextStyle(
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),
@@ -139,9 +141,7 @@ class _EventsPageState extends State<EventsPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => EventAdd(),
-                      ),
+                      MaterialPageRoute(builder: (context) => EventAdd()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -152,10 +152,8 @@ class _EventsPageState extends State<EventsPage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Text(
-                    'Add New Event',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
+                  child: const Text('Add New Event',
+                      style: TextStyle(fontSize: 16.0)),
                 ),
               ),
               Expanded(
@@ -166,16 +164,16 @@ class _EventsPageState extends State<EventsPage> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('events')
-                        .orderBy('date') // Sort events by date
+                        .orderBy('date')
                         .snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       }
                       if (snapshot.hasData) {
-                        final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+                        final List<QueryDocumentSnapshot> documents =
+                            snapshot.data!.docs;
                         return ListView.builder(
                           itemCount: documents.length,
                           itemBuilder: (context, index) {
@@ -197,53 +195,61 @@ class _EventsPageState extends State<EventsPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EventDetails(
-                                      eventId: documents[index].id,
-                                    ),
+                                        eventId: documents[index].id),
                                   ),
                                 );
                               },
                               child: Padding(
-                                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    border: Border.all(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  child: Card(
-                                    color: Colors.transparent,
-                                    child: ListTile(
-                                      leading: Container(
-                                        width: 48,
-                                        height: 48,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: AssetImage(
-                                                'assets/calendar.png'),
+                                padding: const EdgeInsets.only(
+                                    left: 10.0, right: 10.0),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                        border: Border.all(color: Colors.black),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                      child: Card(
+                                        color: Colors.transparent,
+                                        child: ListTile(
+                                          leading: Container(
+                                            width: 48,
+                                            height: 48,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: AssetImage(
+                                                    'assets/calendar.png'),
+                                              ),
+                                            ),
+                                          ),
+                                          title: Text(title),
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(description),
+                                              const SizedBox(height: 4.0),
+                                              Text('Leader: $leader'),
+                                            ],
                                           ),
                                         ),
                                       ),
-                                      title: Text(title),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text(description),
-                                          const SizedBox(height: 4.0),
-                                          Text('Leader: $leader'),
-                                        ],
-                                      ),
                                     ),
-                                  ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
                                 ),
                               ),
                             );
                           },
                         );
                       }
-                      return const SizedBox.shrink();
+                      return const SizedBox();
                     },
                   ),
                 ),
@@ -265,13 +271,54 @@ class _EventsPageState extends State<EventsPage> {
             label: 'Members',
           ),
         ],
-        selectedItemColor: Colors.grey,
-        unselectedItemColor: const Color(0xFFFFFFFF),
+        selectedItemColor: const Color(0xFFFFFFFF),
+        unselectedItemColor: Colors.grey,
+        currentIndex: _selectedIndex, // Make sure to set the selected index
         onTap: (int index) {
-          // Handle bottom navigation item tap
+          setState(() {
+            _selectedIndex = index; // Update the selected index
+          });
+
+          if (index == 0) {
+            // Navigate to the Events page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EventsPage(),
+              ),
+            );
+          } else if (index == 1) {
+            // Navigate to the Members page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    MyHomePage(), // Make sure you have the MembersPage widget
+              ),
+            );
+          }
         },
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (_selectedIndex == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => EventsPage()),
+      );
+    } else if (_selectedIndex == 1) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (cxt) => MyHomePage()),
+        (route) => false,
+      );
+    }
   }
 }
 
@@ -291,8 +338,8 @@ class EventDetails extends StatelessWidget {
             .collection('events')
             .doc(eventId)
             .snapshots(),
-        builder: (BuildContext context,
-            AsyncSnapshot<DocumentSnapshot> snapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
@@ -303,9 +350,9 @@ class EventDetails extends StatelessWidget {
 
           if (snapshot.hasData && snapshot.data!.exists) {
             final eventData = snapshot.data!.data() as Map<String, dynamic>;
-            final eventName = eventData['title'] as String?; // Ensure eventName is of type String
-            final eventDescription = eventData['description'] as String?; // Ensure eventDescription is of type String
-            final eventLeader = eventData['leader'] as String?; // Ensure eventLeader is of type String
+            final eventName = eventData['title'] as String?;
+            final eventDescription = eventData['description'] as String?;
+            final eventLeader = eventData['leader'] as String?;
 
             return Stack(
               children: [
@@ -325,11 +372,9 @@ class EventDetails extends StatelessWidget {
                         child: IconButton(
                           icon: const Icon(Icons.arrow_back),
                           onPressed: () {
-                            Navigator.pop(
-                                context); // Navigate back to the previous page
+                            Navigator.pop(context);
                           },
-                          color: Colors
-                              .grey, // Set the color of the back arrow to grey
+                          color: Colors.grey,
                         ),
                       ),
                       const SizedBox(height: 16.0),
@@ -380,9 +425,7 @@ class EventDetails extends StatelessWidget {
                       const SizedBox(height: 16.0),
                       Slider(
                         value: 0.5,
-                        onChanged: (value) {
-                          // Handle slider value change
-                        },
+                        onChanged: (value) {},
                         min: 0.0,
                         max: 1.0,
                         activeColor: Colors.green,

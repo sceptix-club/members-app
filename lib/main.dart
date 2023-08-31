@@ -36,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
   String sortingField = 'rolePriority'; // Default sorting field
   bool sortDescending = true; // Default sorting order
   var db = FirebaseFirestore.instance;
@@ -74,32 +75,33 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: SingleChildScrollView(
               child: Column(
                 children: [
-                  DropdownButtonFormField<String>(
-                    value: sortingField,
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 120.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(8.0), // Add border
                     ),
-                    items: const [
-                      DropdownMenuItem<String>(
-                        value: 'rolePriority',
-                        child: Text('Sort by Role'),
-                      ),
-                      DropdownMenuItem<String>(
-                        value: 'score',
-                        child: Text('Sort by Score'),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        // Update the sorting fie ld
-                        setState(() {
-                          sortingField = value;
-                          // Update the sorting order
-                          sortDescending = value == 'rolePriority';
-                        });
-                      }
-                    },
+                    child: DropdownButton<String>(
+                      value: sortingField,
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            sortingField = value;
+                            sortDescending = value == 'rolePriority';
+                          });
+                        }
+                      },
+                      items: const [
+                        DropdownMenuItem<String>(
+                          value: 'rolePriority',
+                          child: Text('Sort by Role'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'score',
+                          child: Text('Sort by Score'),
+                        ),
+                      ],
+                    ),
                   ),
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
@@ -148,13 +150,27 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           selectedItemColor: Colors.grey,
           unselectedItemColor: const Color(0xFFFFFFFF),
+          currentIndex: _selectedIndex, // Make sure to set the selected index
           onTap: (int index) {
+            setState(() {
+              _selectedIndex = index; // Update the selected index
+            });
+
             if (index == 0) {
               // Navigate to the Events page
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => EventsPage(),
+                ),
+              );
+            } else if (index == 1) {
+              // Navigate to the Members page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MyHomePage(), // Make sure you have the MembersPage widget
                 ),
               );
             }
@@ -198,16 +214,23 @@ class GetStudentName extends StatelessWidget {
               );
             },
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
+              padding:
+                  const EdgeInsets.only(right: 13, top: 8, bottom: 8, left: 8),
               child: Card(
-                color: Colors.grey[200],
+                color: Colors.grey.withOpacity(0.4),
+                elevation: 0, // No shadow
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.black), // Black border
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
                       CircleAvatar(
                         radius: 25,
-                        backgroundImage: NetworkImage(data['image']),
+                        backgroundImage: NetworkImage(
+                            data['image']), // Replace with appropriate image
                       ),
                       const SizedBox(width: 16),
                       Expanded(
@@ -215,7 +238,8 @@ class GetStudentName extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              data['fullName'],
+                              data[
+                                  'fullName'], // Replace with appropriate full name
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -223,7 +247,8 @@ class GetStudentName extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              data['designation'],
+                              data[
+                                  'designation'], // Replace with appropriate designation
                               style: const TextStyle(fontSize: 14),
                             ),
                           ],
@@ -234,7 +259,8 @@ class GetStudentName extends StatelessWidget {
                         children: [
                           const SizedBox(height: 8),
                           Text(
-                            data['score'].toString(),
+                            data['score']
+                                .toString(), // Replace with appropriate score
                             style: const TextStyle(
                               fontSize: 20,
                               color: Colors.deepOrange,

@@ -28,7 +28,7 @@ class _AuthWidgetState extends State<AuthWidget> {
             MaterialPageRoute(builder: (cxt) => const OnbodingScreen()));
       } else {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (cxt) => const EventsPage()));
+            context, MaterialPageRoute(builder: (cxt) =>  EventsPage()));
       }
       //EventsPage
     });
@@ -40,7 +40,7 @@ class _AuthWidgetState extends State<AuthWidget> {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
                     "assets/images/podium-abstract-splines-on-white-260nw-2121765374.jpg"),

@@ -6,12 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rive/rive.dart';
 import 'package:sceptixapp/main.dart';
-import 'package:sceptixapp/ui/screens/phone_auth.dart';
 import 'package:sceptixapp/ui/screens/register.dart';
 import 'package:sceptixapp/ui/screens/resetpass.dart';
 import '../../globals/common.dart';
 import '../widgets/login_card.dart';
-import 'git_auth.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
